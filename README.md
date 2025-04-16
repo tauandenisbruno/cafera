@@ -18,7 +18,7 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 
 ## Dependency Management
 
-`launch.json'
+`launch.json`
 
 JavaFX >= v24.0
 Vscodium >= v1.98.2
