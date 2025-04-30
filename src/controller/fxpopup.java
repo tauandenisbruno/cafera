@@ -1,5 +1,5 @@
 /*  Criado em 15 de abril de 2025
- *  Última edição em 15 de abril de 2025
+ *  Última edição em 18 de abril de 2025
  * 
  *  Código: Tauan
  *  Desing: Tauan
@@ -19,8 +19,6 @@ import javafx.stage.Stage;
 
 public class fxpopup
 {
-    private String mensagem = "Houve um erro!";
-
     @FXML
     private Button btnFechar;
 
@@ -29,24 +27,25 @@ public class fxpopup
 
     public void setErro(String err)
     {
-        if (err != null)
+        // Verifica se a passagem de parâmetro não é nula e não esteja preenchida com espaços vazios
+        if (err != null && !err.isBlank()) 
         {
-            this.mensagem = err;
-            this.lbMensagem.setText(mensagem);
+            this.lbMensagem.setText(err);
         }
     }
 
     @FXML
     void initialize()
     {
-        lbMensagem.setText(mensagem);
+        // Inicializa a lbMensagem com a mensagemm padrão
+        lbMensagem.setText("Houve um erro!");
     }
 
     @FXML
     void actionFechar(ActionEvent event)
     {
+        // Fecha esta própria janela de aviso
         Stage popup = (Stage) btnFechar.getScene().getWindow();
         popup.close();
     }
-
 }

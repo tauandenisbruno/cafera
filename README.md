@@ -16,14 +16,45 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 > If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
 > The `launch.json` files contains the deps configuration settings.
 
-## Dependency Management
+## VSCodium Dependency Management
 
-`launch.json`
+- JavaFX >= v24.0
+- Vscodium >= v1.98.2
+- Extension Pack For Java (by "vscjava") >= v0.29.0
+- JavaFX Scene Builder >= 22.0.0
 
-JavaFX >= v24.0
-Vscodium >= v1.98.2
-Extension Pack For Java (by "vscjava") >= v0.29.0
-JavaFX Scene Builder >= 22.0.0
+`launch.json'
+```
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "App",
+            "projectName": "vscodium_cafera_55db3f1f",
+            "vmArgs": [
+                "--add-modules",
+                "javafx.controls,javafx.fxml",
+                "--module-path",
+                "${workspaceFolder}/lib"
+            ]
+        }
+    ]
+}
+```
+
+`settings.json'
+```
+{
+    "java.project.sourcePaths": ["src"],
+    "java.project.outputPath": "bin",
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar"
+    ]
+}
+```
 
 ## `lib` folder:
 

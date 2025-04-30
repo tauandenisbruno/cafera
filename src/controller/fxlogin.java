@@ -1,5 +1,5 @@
 /*  Criado em 14 de abril de 2025
- *  Última edição em 15 de abril de 2025
+ *  Última edição em 22 de abril de 2025
  * 
  *  Código: Tauan
  *  Desing: Tauan
@@ -26,12 +26,16 @@ import javafx.stage.Stage;
 
 public class fxlogin
 {
-    private String version = "v0.0.3";
+    // Variáveis estáticas
+    private static String version = "v0.0.7"; // Versão do programa
+    private static int usr = 2; // Tipo de usuário (0 : Funcionário / 1 : Administrdor / >1 : inválido)
+    private static String[] login = {"Funcionario", "Tauan"}; // Login dos usuários cadastrados
+    private static int[] pwd = {12345, 54321}; // As senhas dos usuários cadastrados
+
+    // Variáveis padrão
     private int pwdconv; // Armazena a senha convertida de "txtfSenha()"
-    private int usr = 0; // Tipo de usuário (0 : OPERACIONAL / 1 : ADMINISTRADOR / >1 : INVÁLIDO)
-    private int[] pwd = {12345, 54321}; // As senhas dos usuários cadastrados
-    private String[] login = {"Funcionario", "Administrador"}; // Login dos usuários cadastrados
     private Stage popstage; // Variável do tipo Stage
+    private String newText; // Variável armazena temporariamente os dados da senha
 
     @FXML
     private Label lbVersion;
@@ -54,7 +58,7 @@ public class fxlogin
         // Impede qualquer coisa que não sejam números de serem digitadas no campo "senha"
         txtfSenha.setTextFormatter(new TextFormatter<>(change ->
         {
-            String newText = change.getControlNewText();
+            newText = change.getControlNewText();
 
             if (newText.matches("[0-9]*"))
             {
@@ -67,19 +71,29 @@ public class fxlogin
         }));
     }
 
+    // Aqui é feito o teste para verificar nome e usuário para fazer login
     @FXML
     void actionConfirmar(ActionEvent event) throws IOException
     {
+        
         try
         { 
-            pwdconv = Integer.parseInt(txtfSenha.getText()); // Recebe a conversão do campo de senha para int
+            // Verifica se já não tem outro popup aberto
+            if (popstage != null && popstage.isShowing()) 
+            {
+                return;
+            }
 
+            // Recebe a conversão do campo de senha para int
+            pwdconv = Integer.parseInt(txtfSenha.getText()); 
+
+            // Verifica o login
             if ((txtfUsuario.getText().equals(login[0])) && (pwdconv == pwd[0]))
             {
                 // Funcionario...
                 usr = 0;
                 
-                System.out.println("Logado como \"Fucionário\""); // Aqui chamaria a tela do funcionário
+                System.out.println("Logado como \"" + getUsr() + "\"");
                 txtfSenha.clear();
                 txtfUsuario.clear();
             }
@@ -88,20 +102,32 @@ public class fxlogin
                 // Administrador...
                 usr = 1;
 
-                System.out.println("Logado como \"Administrador\""); // Aqui chamaria a tela do administrador
+                System.out.println("Logado como \"" + getUsr() + "\"");
+                       
                 txtfSenha.clear();
                 txtfUsuario.clear();
+
+                // Chama a tela do administrador
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/adm.fxml"));
+                Parent root = loader.load();
+                Stage admstage = new Stage();
+                admstage.setMinWidth(800);
+                admstage.setMinHeight(650);
+                admstage.setScene(new Scene(root));
+                admstage.setResizable(true);
+                admstage.setTitle("Administrador");
+                admstage.show();
+
+                // Fecha janela de login
+                Stage fxlogin = (Stage) btnConfirmar.getScene().getWindow();
+                fxlogin.close();
             }
             else
             {
                 // Senha ou usuário inválidos...
                 usr = 2;
 
-                // Abre o popup de erro
-                if (popstage != null && popstage.isShowing()) // Verifica se já não tem outro popup aberto
-                {
-                    return;
-                }
+                // Popup de erro
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/popup.fxml"));
                 Parent root = loader.load();
                 fxpopup popup = loader.getController();
@@ -113,20 +139,18 @@ public class fxlogin
                 popstage.show();
 
                 System.out.println("Erro: Usuário ou senha inválidos!");
-                txtfSenha.clear();
-                txtfUsuario.clear();
             }
 
         }
         catch (NumberFormatException e) 
         {
             // Caso não tenha digitado nada em um ou ambos os campos
-
-            // Popup de erro
-            if (popstage != null && popstage.isShowing()) // Verifica se já não tem outro popup aberto
+            if (popstage != null && popstage.isShowing())
             {
                 return;
             }
+
+            // Popup de erro
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/popup.fxml"));
             Parent root = loader.load();
             fxpopup popup = loader.getController();
@@ -137,13 +161,34 @@ public class fxlogin
             popstage.setTitle("Aviso");
             popstage.show();
 
-            System.out.println("Erro: " + e.getMessage());
+            System.out.println("Erro: " + e.getCause() + "\nMotivo: " + e.getMessage());
         }
     }
 
-    public int getUsr()
+    // Retorna o ID Int do usuário que fez login
+    public static int getID() 
     {
         return usr;
     }
 
+    // Retorna o nome String do usuário que fez login
+    public static String getUsr()
+    {
+        String usr = "erro";
+        switch (getID())
+        {
+            case 0:
+                usr = login[0];
+                break;
+            
+            case 1:
+                usr = login[1];
+                break;
+
+            default:
+                usr = "Inválido";
+                break;
+        }
+        return usr;
+    }
 }
