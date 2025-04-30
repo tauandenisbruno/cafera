@@ -19,6 +19,7 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 ## VSCodium Dependency Management
 
 - JavaFX >= v24.0
+- Java OpenJDK >= 23.0.2
 - Vscodium >= v1.98.2
 - Extension Pack For Java (by "vscjava") >= v0.29.0
 - JavaFX Scene Builder >= 22.0.0
