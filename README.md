@@ -23,7 +23,7 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 - Extension Pack For Java (by "vscjava") >= v0.29.0
 - JavaFX Scene Builder >= 22.0.0
 
-`launch.json'
+`launch.json`
 ```
 {
     "version": "0.2.0",
@@ -45,7 +45,7 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 }
 ```
 
-`settings.json'
+`settings.json`
 ```
 {
     "java.project.sourcePaths": ["src"],
