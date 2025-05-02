@@ -1,4 +1,6 @@
-/*  Criado em 14 de abril de 2025
+/*  Github: https://github.com/tauandenisbruno/cafera
+ *  
+ *  Criado em 14 de abril de 2025
  *  Última edição em 14 de abril de 2025
  * 
  *  Código: Tauan
@@ -9,7 +11,6 @@
  * 
  */
 
-//import controller.fxlogin;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

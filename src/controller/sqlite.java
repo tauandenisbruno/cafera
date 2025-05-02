@@ -1,5 +1,5 @@
 /*  Criado em 20 de abril de 2025
- *  Última edição em 30 de abril de 2025
+ *  Última edição em 02 de maio de 2025
  * 
  *  Código: Tauan
  *  Banco: Tauan, Larissa e Aisha
@@ -15,18 +15,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.SQLException;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
-import java.sql.SQLException;
 
 public class sqlite
 {
     private static String sql_local = "jdbc:sqlite:./src/banco.db";
     
-
-    // Para mostrar todos os dados no console para fins de testes
+    // Para mostrar todos os usuários no console para fins de testes
     public static void MostrarUsuarios()
     {
         String sql_query = "SELECT * FROM usuario";
@@ -58,8 +56,7 @@ public class sqlite
 
     // Mostra todos os dados na tabela
     public static ObservableList<produto> MostrarProdutos()
-    {
-        
+    {      
         ObservableList<produto> produtos = FXCollections.observableArrayList();
         String sql_query = "SELECT * FROM produto";
 
@@ -78,7 +75,6 @@ public class sqlite
                         resultado.getString("NOME"),
                         resultado.getDouble("PRECO"),
                         resultado.getInt("ESTOQUE")
-
                     );
                     produtos.add(prod);
                 }

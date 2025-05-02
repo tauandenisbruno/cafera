@@ -1,5 +1,5 @@
 /*  Criado em 18 de abril de 2025
- *  Última edição em 30 de abril de 2025
+ *  Última edição em 02 de maio de 2025
  * 
  *  Código: Tauan
  *  Desing: Tauan, Arthur
@@ -68,7 +68,7 @@ public class fxadm
         lbIDUsuario.setText(fxlogin.getUsr());
 
         // Prepara a tabela para definir qual campo será colocado em cada coluna da tabela
-        // Ele pega automaticamente os dados do métodos Get
+        // Ele pega automaticamente os dados dos métodos Get da classe "produto"
         tbcProdutosID.setCellValueFactory(new PropertyValueFactory<>("produtoID"));
         tbcProdutosNOME.setCellValueFactory(new PropertyValueFactory<>("produtoNome"));
         tbcProdutosPRECO.setCellValueFactory(new PropertyValueFactory<>("produtoPreco"));

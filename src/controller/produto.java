@@ -1,3 +1,13 @@
+/*  Criado em 01 de maio de 2025
+ *  Última edição em 02 de maio de 2025
+ * 
+ *  Código: Tauan
+ *  Linux Mint 22.1 - Vscodium 1.98.2
+ * 
+ *  Responsável pelo instânciamento realizado automaticamente pela classe "sqlite" para cada novo produto
+ *  que ele retornar do banco de dados e assim ser chamado e inserido na tabela para ser exibido ao usuário.
+ */
+
 package controller;
 
 public class produto
