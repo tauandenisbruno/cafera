@@ -15,16 +15,22 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.sql.SQLException;
 
 public class sqlite
 {
     private static String sql_local = "jdbc:sqlite:./src/banco.db";
-    private static String sql_query = "SELECT * FROM produto";
+    
 
     // Para mostrar todos os dados no console para fins de testes
-    static void MostrarTudo()
+    public static void MostrarUsuarios()
     {
+        String sql_query = "SELECT * FROM usuario";
+
        try
        (
         Connection conn = DriverManager.getConnection(sql_local);
@@ -34,13 +40,10 @@ public class sqlite
            {
                 while (resultado.next())
                 {
-                    int ID = resultado.getInt("ID");
-                    String NOME = resultado.getString("NOME");
-                    double PRECO = resultado.getDouble("PRECO");
-                    int EST = resultado.getInt("ESTOQUE");
+                    String nome = resultado.getString("nome");
+                    int senha = resultado.getInt("senha");
 
-
-                    System.out.println("id: " + ID + " NOME: " + NOME + " PREÇO: " + PRECO + " ESTOQUE: " + EST);
+                    System.out.println("NOME: " + nome + " SENHA: " + senha);
                 }
                 conn.close();
                 select.close();
@@ -51,5 +54,44 @@ public class sqlite
         {
             System.out.println("ERRO: " + e.getMessage());
         }
+    }
+
+    // Mostra todos os dados na tabela
+    public static ObservableList<produto> MostrarProdutos()
+    {
+        
+        ObservableList<produto> produtos = FXCollections.observableArrayList();
+        String sql_query = "SELECT * FROM produto";
+
+       try
+       (
+        Connection conn = DriverManager.getConnection(sql_local);
+        Statement select = conn.createStatement();
+        ResultSet resultado = select.executeQuery(sql_query);
+       )
+           {
+                while (resultado.next())
+                {
+                    produto prod = new produto
+                    (
+                        resultado.getInt("ID"),
+                        resultado.getString("NOME"),
+                        resultado.getDouble("PRECO"),
+                        resultado.getInt("ESTOQUE")
+
+                    );
+                    produtos.add(prod);
+                }
+                conn.close();
+                select.close();
+                System.out.println("SQLite > Sucesso");
+           }
+
+        catch(SQLException e)
+        {
+            System.out.println("SQLite > Erro: " + e.getMessage());
+        }
+
+        return produtos;
     }
 }

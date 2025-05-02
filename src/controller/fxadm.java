@@ -21,9 +21,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 public class fxadm
 {
@@ -64,6 +66,35 @@ public class fxadm
     public void initialize()
     {
         lbIDUsuario.setText(fxlogin.getUsr());
+
+        // Prepara a tabela para definir qual campo será colocado em cada coluna da tabela
+        // Ele pega automaticamente os dados do métodos Get
+        tbcProdutosID.setCellValueFactory(new PropertyValueFactory<>("produtoID"));
+        tbcProdutosNOME.setCellValueFactory(new PropertyValueFactory<>("produtoNome"));
+        tbcProdutosPRECO.setCellValueFactory(new PropertyValueFactory<>("produtoPreco"));
+        tbcProdutosESTOQUE.setCellValueFactory(new PropertyValueFactory<>("produtoEstoque"));
+
+        // Formata a tabela "Preço" para que exiba "R$" e também limita a casa decimal em 2
+        tbcProdutosPRECO.setCellFactory(_ -> new TableCell<produto, Double>()
+            {
+                @Override
+                protected void updateItem(Double preco, boolean empty)
+                {
+                    super.updateItem(preco, empty);
+                    if (empty || preco == null)
+                    {
+                        setText(null);
+                    }
+                    else
+                    {
+                        setText(String.format("R$ %.2f", preco));
+                    }
+                }
+            }
+        );
+
+        // Inicializa a tabela com os dados de fato
+        tbviewProdutos.setItems(sqlite.MostrarProdutos());
     }
 
     // Tabela PEDIDOS
@@ -87,19 +118,19 @@ public class fxadm
 
     // Tabela PRODUTOS
     @FXML
-    private TableView<?> tbviewProdutos;
+    private TableView<produto> tbviewProdutos;
 
     @FXML
-    private TableColumn<?, ?> tbcProdutosESTOQUE;
+    private TableColumn<produto, Integer> tbcProdutosESTOQUE;
 
     @FXML
-    private TableColumn<?, ?> tbcProdutosID;
+    private TableColumn<produto, Integer> tbcProdutosID;
 
     @FXML
-    private TableColumn<?, ?> tbcProdutosNOME;
+    private TableColumn<produto, String> tbcProdutosNOME;
 
     @FXML
-    private TableColumn<?, ?> tbcProdutosPRECO;
+    private TableColumn<produto, Double> tbcProdutosPRECO;
 
     // Ação dos botões de "Pedidos"
     @FXML
@@ -125,7 +156,6 @@ public class fxadm
     void actionProdutoAdd(ActionEvent event)
     {
         System.out.println("btn: Adicionar produto");
-        sqlite.MostrarTudo(); // Apenas para teste
     }
 
     @FXML
