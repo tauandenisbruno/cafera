@@ -26,10 +26,10 @@
                      <center>
                         <TableView fx:id="tbviewProdutos" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                           <columns>
-                            <TableColumn fx:id="tbcProdutosID" editable="false" minWidth="50.0" prefWidth="100.0" resizable="false" sortable="false" text="ID" />
+                            <TableColumn fx:id="tbcProdutosID" editable="false" minWidth="50.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-alignment: CENTER;" text="ID" />
                             <TableColumn fx:id="tbcProdutosNOME" editable="false" minWidth="50.0" prefWidth="75.0" sortable="false" text="Nome" />
-                              <TableColumn fx:id="tbcProdutosPRECO" editable="false" minWidth="50.0" prefWidth="100.0" resizable="false" sortable="false" text="Preço" />
-                              <TableColumn fx:id="tbcProdutosESTOQUE" editable="false" minWidth="50.0" prefWidth="100.0" resizable="false" sortable="false" text="Estoque" />
+                              <TableColumn fx:id="tbcProdutosPRECO" editable="false" minWidth="50.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-alignment: CENTER-RIGHT;" text="Preço" />
+                              <TableColumn fx:id="tbcProdutosESTOQUE" editable="false" minWidth="50.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-alignment: CENTER;" text="Estoque" />
                           </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -43,8 +43,9 @@
                         <ButtonBar focusTraversable="false" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                           <buttons>
                             <Button fx:id="btnProdutoAdd" mnemonicParsing="false" onAction="#actionProdutoAdd" text="Adicionar" />
-                              <Button fx:id="btnProdutoRemove" mnemonicParsing="false" onAction="#actionProdutoRemove" text="Remover" />
-                              <Button fx:id="btnProdutoEdit" mnemonicParsing="false" onAction="#actionProdutoEdit" text="Editar" />
+                              <Button fx:id="btnProdutoRemove" disable="true" mnemonicParsing="false" onAction="#actionProdutoRemove" text="Remover" />
+                              <Button fx:id="btnProdutoEdit" disable="true" mnemonicParsing="false" onAction="#actionProdutoEdit" text="Editar" />
+                              <Button fx:id="btnProdutosAtualizar" mnemonicParsing="false" onAction="#actionProdutosAtualizar" prefHeight="24.0" text="Atualizar" textAlignment="CENTER" />
                           </buttons>
                         </ButtonBar>
                      </bottom>
@@ -57,11 +58,11 @@
                      <center>
                         <TableView fx:id="tbviewPedidos" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                           <columns>
-                            <TableColumn fx:id="tbcPedidosID" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="ID" />
+                            <TableColumn fx:id="tbcPedidosID" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-alignment: CENTER;" text="ID" />
                             <TableColumn fx:id="tbcPedidosCLIENTE" editable="false" prefWidth="75.0" sortable="false" text="Cliente" />
                               <TableColumn fx:id="tbcPedidosPRODUTO" editable="false" prefWidth="75.0" sortable="false" text="Produto" />
-                              <TableColumn fx:id="tbcPedidosQUANTIDADE" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Quantidade" />
-                              <TableColumn fx:id="tbcPedidosTOTAL" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Total" />
+                              <TableColumn fx:id="tbcPedidosQUANTIDADE" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-alignment: CENTER;" text="Quantidade" />
+                              <TableColumn fx:id="tbcPedidosTOTAL" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-alignment: CENTER-RIGHT;" text="Total" />
                           </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -72,8 +73,9 @@
                         <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                           <buttons>
                             <Button fx:id="btnPedidosAdd" mnemonicParsing="false" onAction="#actionPedidosAdd" text="Adicionar" />
-                              <Button fx:id="btnPedidosRemove" mnemonicParsing="false" onAction="#actionPedidosRemove" text="Remover" />
-                              <Button fx:id="btnPedidosEdit" mnemonicParsing="false" onAction="#btnPedidosEdit" text="Editar" />
+                              <Button fx:id="btnPedidosRemove" disable="true" mnemonicParsing="false" onAction="#actionPedidosRemove" text="Remover" />
+                              <Button fx:id="btnPedidosEdit" disable="true" mnemonicParsing="false" onAction="#actionPedidosEdit" text="Editar" />
+                              <Button fx:id="btnPedidosAtualizar" mnemonicParsing="false" onAction="#actionPedidosAtualizar" text="Atualizar" textAlignment="CENTER" />
                           </buttons>
                         </ButtonBar>
                      </bottom>

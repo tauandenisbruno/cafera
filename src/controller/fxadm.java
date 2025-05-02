@@ -41,6 +41,12 @@ public class fxadm
     private Button btnPedidosAdd;
 
     @FXML
+    private Button btnPedidosAtualizar;
+
+    @FXML
+    private Button btnProdutosAtualizar;
+
+    @FXML
     private Button btnPedidosEdit;
 
     @FXML
@@ -95,6 +101,59 @@ public class fxadm
 
         // Inicializa a tabela com os dados de fato
         tbviewProdutos.setItems(sqlite.MostrarProdutos());
+
+        // Ativa o botão EXCLUIR da tabela "Produto"
+        tbviewProdutos.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) ->
+        {
+            if (newValue != null)
+            {
+                btnProdutoRemove.setDisable(false);
+            }
+            else
+            {
+                btnProdutoRemove.setDisable(true);
+            }
+        });
+
+        // Ativa o botão EXCLUIR da tabela "Pedidos"
+        tbviewPedidos.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) ->
+        {
+            if (newValue != null)
+            {
+                btnPedidosRemove.setDisable(false);
+            }
+            else
+            {
+                btnPedidosRemove.setDisable(true);
+            }
+        });
+
+        // Ativa o botão EDITAR da tabela "Produto"
+        tbviewProdutos.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) ->
+        {
+            if (newValue != null)
+            {
+                btnProdutoEdit.setDisable(false);
+            }
+            else
+            {
+                btnProdutoEdit.setDisable(true);
+            }
+        });
+
+        // Ativa o botão EDITAR da tabela "Pedidos"
+        tbviewPedidos.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) ->
+        {
+            if (newValue != null)
+            {
+                btnPedidosEdit.setDisable(false);
+            }
+            else
+            {
+                btnPedidosEdit.setDisable(true);
+            }
+        });
+
     }
 
     // Tabela PEDIDOS
@@ -134,6 +193,12 @@ public class fxadm
 
     // Ação dos botões de "Pedidos"
     @FXML
+    void actionPedidosAtualizar(ActionEvent event)
+    {
+        System.out.println("btn: Atualizar tabela pedido");
+    }
+
+    @FXML
     void actionPedidosAdd(ActionEvent event)
     {
         System.out.println("btn: Adicionar pedido");
@@ -146,12 +211,19 @@ public class fxadm
     }
 
     @FXML
-    void btnPedidosEdit(ActionEvent event)
+    void actionPedidosEdit(ActionEvent event)
     {
         System.out.println("btn: Editar pedido");
     }
 
     // Ação dos botões de "Produtos"
+    @FXML
+    void actionProdutosAtualizar(ActionEvent event)
+    {
+        System.out.println("btn: Atualizar tabela produto");
+        tbviewProdutos.setItems(sqlite.MostrarProdutos());
+    }
+
     @FXML
     void actionProdutoAdd(ActionEvent event)
     {
