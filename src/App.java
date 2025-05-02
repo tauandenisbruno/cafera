@@ -1,10 +1,10 @@
 /*  Github: https://github.com/tauandenisbruno/cafera
  *  
  *  Criado em 14 de abril de 2025
- *  Última edição em 14 de abril de 2025
+ *  Última edição em 20 de abril de 2025
  * 
  *  Código: Tauan
- *  Desing: Tauan
+ *  Integrantes: Tauan, Larissa, Aisha, Arthur e Marcos
  *  Linux Mint 22.1 - Vscodium 1.98.2
  * 
  *  Classe principal, cuja função é iniciar a primeira tela que é a de login.
