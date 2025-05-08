@@ -1,5 +1,5 @@
 /*  Criado em 18 de abril de 2025
- *  Última edição em 02 de maio de 2025
+ *  Última edição em 08 de maio de 2025
  * 
  *  Código: Tauan
  *  Desing: Tauan, Arthur
@@ -19,6 +19,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
@@ -153,7 +154,6 @@ public class fxadm
                 btnPedidosEdit.setDisable(true);
             }
         });
-
     }
 
     // Tabela PEDIDOS
@@ -220,7 +220,7 @@ public class fxadm
     @FXML
     void actionProdutosAtualizar(ActionEvent event)
     {
-        System.out.println("btn: Atualizar tabela produto");
+        System.out.println("btn: Atualizar");
         tbviewProdutos.setItems(sqlite.MostrarProdutos());
     }
 
@@ -236,10 +236,37 @@ public class fxadm
         System.out.println("btn: Editar produto");
     }
 
+    // Excluir produto
     @FXML
-    void actionProdutoRemove(ActionEvent event)
+    void actionProdutoRemove(ActionEvent event) throws IOException
     {
         System.out.println("btn: Remover produto");
+
+        // Popup de confirmação
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/confirmar.fxml"));
+        Parent root = loader.load();
+        fxconfirmar conf = loader.getController();
+        conf.setFxadm(this);
+        Stage confStage = new Stage();
+        confStage.setScene(new Scene(root));
+        confStage.initModality(Modality.APPLICATION_MODAL);
+        //confStage.initOwner(this);
+        confStage.setResizable(false);
+        confStage.setTitle("Aviso");
+        confStage.show();
+    }
+
+    // Método público para poder ser acessado pela classe fxconfirmar
+    public produto getProdutoSelecionado()
+    {
+        return tbviewProdutos.getSelectionModel().getSelectedItem();
+    }
+
+    // Método público para poder excluir o produto pela classe fxconfirmar
+    public void excluirProduto(int idProduto)
+    {
+        sqlite.excluirProduto(idProduto);
+        tbviewProdutos.setItems(sqlite.MostrarProdutos());
     }
 
     // Ação do botão de procurar
@@ -248,7 +275,6 @@ public class fxadm
     {
         System.out.println("btn: Procurar");
     }
-
     
     // Ação do botão de logout
     @FXML

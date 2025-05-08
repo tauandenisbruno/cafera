@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import javafx.collections.FXCollections;
@@ -80,7 +81,7 @@ public class sqlite
                 }
                 conn.close();
                 select.close();
-                System.out.println("SQLite > Sucesso");
+                System.out.println("SQLite > Sucesso (Atualizar)");
            }
 
         catch(SQLException e)
@@ -89,5 +90,27 @@ public class sqlite
         }
 
         return produtos;
+    }
+
+    // Exclui um item da tabela PRODUTO
+    public static void excluirProduto(int id)
+    {
+        String sql_query = "DELETE FROM produto WHERE id = ?";
+
+       try
+       (
+        Connection conn = DriverManager.getConnection(sql_local);
+        PreparedStatement excluir = conn.prepareStatement(sql_query);
+       )
+           {
+                excluir.setInt(1, id);
+                excluir.executeUpdate();
+                System.out.println("SQLite > Sucesso (Remover produto ID: " + id + ")");
+           }
+
+        catch(SQLException e)
+        {
+            System.out.println("SQLite > Erro (" + e.getMessage() + ")");
+        }
     }
 }
