@@ -122,12 +122,13 @@ public class fxpopupAddProduto
             }
         }));
 
-        // Limita o campo "Nome" a no máximo 125 caracteres
+        // Condiciona o campo "Nome"
         txtfNomeProduto.setTextFormatter(new TextFormatter<>(change ->
         {
             String text = change.getControlNewText();
 
-            if(text.matches("^\\S{0,125}$"))
+            // Limita o número de caracteres e impede de começar com espaços
+            if(text.isEmpty() || (text.length() <= 125 && !text.startsWith(" ")))
             {
                 return change;
             }

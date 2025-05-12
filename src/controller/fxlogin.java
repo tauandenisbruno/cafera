@@ -22,6 +22,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.Label;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class fxlogin
@@ -146,6 +147,7 @@ public class fxlogin
                 fxpopup popup = loader.getController();
                 popup.setErro("Usuário ou senha inválidos!");
                 popstage = new Stage();
+                popstage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
                 popstage.setScene(new Scene(root));
                 popstage.setResizable(false);
                 popstage.setTitle("Aviso");
@@ -170,6 +172,7 @@ public class fxlogin
             popup.setErro("O campo não pode estar vazio!");
             popstage = new Stage();
             popstage.setScene(new Scene(root));
+            popstage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
             popstage.setResizable(false);
             popstage.setTitle("Aviso");
             popstage.show();
