@@ -1,5 +1,5 @@
 /*  Criado em 14 de abril de 2025
- *  Última edição em 22 de abril de 2025
+ *  Última edição em 11 de maio de 2025
  * 
  *  Código: Tauan
  *  Desing: Tauan
@@ -35,7 +35,6 @@ public class fxlogin
     // Variáveis padrão
     private int pwdconv; // Armazena a senha convertida de "txtfSenha()"
     private Stage popstage; // Variável do tipo Stage
-    private String newText; // Variável armazena temporariamente os dados da senha
 
     @FXML
     private Label lbVersion;
@@ -55,12 +54,27 @@ public class fxlogin
         // Exibe a versão do programa
         lbVersion.setText(version);
         
-        // Impede qualquer coisa que não sejam números de serem digitadas no campo "senha"
+        // Impede qualquer coisa que não sejam números de serem digitadas no campo "senha" com limite de 10 caracteres
         txtfSenha.setTextFormatter(new TextFormatter<>(change ->
         {
-            newText = change.getControlNewText();
+            String newText = change.getControlNewText();
 
-            if (newText.matches("[0-9]*"))
+            if (newText.matches("^\\d{0,10}$"))
+            {
+                return change;
+            }
+            else
+            {
+                return null;
+            }
+        }));
+
+        // Limita o número mácximo de caracteres a 15
+        txtfUsuario.setTextFormatter(new TextFormatter<>(change ->
+        {
+            String newText = change.getControlNewText();
+
+            if(newText.matches("^\\S{0,15}$"))
             {
                 return change;
             }
@@ -75,7 +89,6 @@ public class fxlogin
     @FXML
     void actionConfirmar(ActionEvent event) throws IOException
     {
-        
         try
         { 
             // Verifica se já não tem outro popup aberto

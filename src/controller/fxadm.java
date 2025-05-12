@@ -1,5 +1,5 @@
 /*  Criado em 18 de abril de 2025
- *  Última edição em 08 de maio de 2025
+ *  Última edição em 11 de maio de 2025
  * 
  *  Código: Tauan
  *  Desing: Tauan, Arthur
@@ -220,14 +220,23 @@ public class fxadm
     @FXML
     void actionProdutosAtualizar(ActionEvent event)
     {
-        System.out.println("btn: Atualizar");
         tbviewProdutos.setItems(sqlite.MostrarProdutos());
     }
 
     @FXML
-    void actionProdutoAdd(ActionEvent event)
+    void actionProdutoAdd(ActionEvent event) throws IOException
     {
-        System.out.println("btn: Adicionar produto");
+        // Popup de confirmação
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/popupAddProduto.fxml"));
+        Parent root = loader.load();
+        //fxpopupAddProduto AddIem = loader.getController();
+        //AddIem.setFxadm(this);
+        Stage AddStage = new Stage();
+        AddStage.setScene(new Scene(root));
+        AddStage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
+        AddStage.setResizable(false);
+        AddStage.setTitle("Adicionar novo item");
+        AddStage.show();
     }
 
     @FXML
@@ -240,17 +249,14 @@ public class fxadm
     @FXML
     void actionProdutoRemove(ActionEvent event) throws IOException
     {
-        System.out.println("btn: Remover produto");
-
         // Popup de confirmação
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/confirmar.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/popupRemProduto.fxml"));
         Parent root = loader.load();
-        fxconfirmar conf = loader.getController();
+        fxpopupRemProduto conf = loader.getController();
         conf.setFxadm(this);
         Stage confStage = new Stage();
         confStage.setScene(new Scene(root));
-        confStage.initModality(Modality.APPLICATION_MODAL);
-        //confStage.initOwner(this);
+        confStage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
         confStage.setResizable(false);
         confStage.setTitle("Aviso");
         confStage.show();

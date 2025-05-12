@@ -1,5 +1,5 @@
 /*  Criado em 20 de abril de 2025
- *  Última edição em 02 de maio de 2025
+ *  Última edição em 08 de maio de 2025
  * 
  *  Código: Tauan
  *  Banco: Tauan, Larissa e Aisha
@@ -24,6 +24,19 @@ import javafx.collections.ObservableList;
 public class sqlite
 {
     private static String sql_local = "jdbc:sqlite:./src/banco.db";
+    private static int sql_erro = 0;
+
+    // Retorna o erro para futuro tratamento de exeções
+    public static int getErro()
+    {
+        return sql_erro;
+    }
+
+    // Altera o codigo do erro
+    public static void setErro(int codigo)
+    {
+        sql_erro = codigo;
+    }
     
     // Para mostrar todos os usuários no console para fins de testes
     public static void MostrarUsuarios()
@@ -51,7 +64,8 @@ public class sqlite
 
         catch(SQLException e)
         {
-            System.out.println("ERRO: " + e.getMessage());
+            sql_erro = e.getErrorCode();
+            System.out.println("SQLite > Erro: " + e.getMessage());
         }
     }
 
@@ -86,6 +100,7 @@ public class sqlite
 
         catch(SQLException e)
         {
+            sql_erro = e.getErrorCode();
             System.out.println("SQLite > Erro: " + e.getMessage());
         }
 
@@ -110,7 +125,35 @@ public class sqlite
 
         catch(SQLException e)
         {
-            System.out.println("SQLite > Erro (" + e.getMessage() + ")");
+            sql_erro = e.getErrorCode();
+            System.out.println("SQLite > Erro: " + e.getMessage());
         }
+    }
+
+    // Adiciona um item da tabela PRODUTO
+    public static void adicionarProduto(int id, String nome, Double preco, int estoque)
+    {
+       String sql_query = "INSERT INTO produto (id, nome, preco, estoque) VALUES (?, ?, ?, ?)";
+
+       try
+       (
+            Connection conn = DriverManager.getConnection(sql_local);
+            PreparedStatement adicionar = conn.prepareStatement(sql_query);
+       )
+       {
+            adicionar.setInt(1, id);
+            adicionar.setString(2, nome);
+            adicionar.setDouble(3, preco);
+            adicionar.setInt(4, estoque);
+
+            adicionar.executeUpdate();
+            System.out.println("SQLite > Sucesso: Insert");
+            
+       }
+       catch(SQLException e)
+       {
+            sql_erro = e.getErrorCode();
+            System.out.println("SQLite > Erro: " + e.getMessage());
+       }
     }
 }
