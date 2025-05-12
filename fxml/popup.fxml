@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.fxpopup">
+   <children>
+      <Button fx:id="btnFechar" layoutX="94.0" layoutY="62.0" mnemonicParsing="false" onAction="#actionFechar" text="Fechar" />
+      <Label fx:id="lbMensagem" alignment="CENTER" contentDisplay="CENTER" layoutX="12.0" layoutY="14.0" prefHeight="32.0" prefWidth="226.0" text="mensagem" textAlignment="CENTER" wrapText="true" />
+   </children>
+</AnchorPane>
