@@ -95,7 +95,7 @@ public class sqlite
                 }
                 conn.close();
                 select.close();
-                System.out.println("SQLite > Sucesso (Atualizar)");
+                System.out.println("SQLite > Sucesso: Listar");
            }
 
         catch(SQLException e)
@@ -175,6 +175,7 @@ public class sqlite
             update.setInt(5, id);
 
             update.executeUpdate();
+            System.out.println("SQLite > Sucesso: Editar");
         }
         catch (SQLException e)
         {
