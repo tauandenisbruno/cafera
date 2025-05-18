@@ -156,4 +156,30 @@ public class sqlite
             System.out.println("SQLite > Erro: " + e.getMessage());
        }
     }
+
+    // Edita um item da tabela produto
+    public static void editarProduto(int id, String nome, double preco, int estoque)
+    {
+        String sql_query = "UPDATE produto SET id = ?, nome = ?, preco = ?, estoque = ? WHERE id = ?";
+
+        try
+        (
+            Connection conn = DriverManager.getConnection(sql_local);
+            PreparedStatement update = conn.prepareStatement(sql_query);
+        )
+        {
+            update.setInt(1, id);
+            update.setString(2, nome);
+            update.setDouble(3, preco);
+            update.setInt(4, estoque);
+            update.setInt(5, id);
+
+            update.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            System.out.println("ERRO: " + e.getMessage() + "\nCOD: " + e.getErrorCode() + "\nCAUSE: " + e.getCause());
+            sql_erro = e.getErrorCode();
+        }
+    }
 }

@@ -51,6 +51,7 @@ public class fxpopupRemProduto
         {
             int idProduto = produtoSelecionado.getProdutoID();
             fxadm.excluirProduto(idProduto);
+            //System.out.println("VALOR: " + idProduto);
         }
         
         Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();

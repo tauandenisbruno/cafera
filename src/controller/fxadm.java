@@ -81,6 +81,8 @@ public class fxadm
         tbcProdutosPRECO.setCellValueFactory(new PropertyValueFactory<>("produtoPreco"));
         tbcProdutosESTOQUE.setCellValueFactory(new PropertyValueFactory<>("produtoEstoque"));
 
+        // Pedidos
+
         // Formata a tabela "Preço" para que exiba "R$" e também limita a casa decimal em 2
         tbcProdutosPRECO.setCellFactory(_ -> new TableCell<produto, Double>()
             {
@@ -240,9 +242,19 @@ public class fxadm
     }
 
     @FXML
-    void actionProdutoEdit(ActionEvent event)
+    void actionProdutoEdit(ActionEvent event) throws IOException
     {
-        System.out.println("btn: Editar produto");
+        // Popup de confirmação
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/popupEditProduto.fxml"));
+        Parent root = loader.load();
+        fxpopupEditProduto edit = loader.getController();
+        edit.setFxadm(this); // mandar a instância atual para o popup de adicionar o produto
+        Stage AddStage = new Stage();
+        AddStage.setScene(new Scene(root));
+        AddStage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
+        AddStage.setResizable(false);
+        AddStage.setTitle("Editar um item");
+        AddStage.show();
     }
 
     // Excluir produto
@@ -268,11 +280,17 @@ public class fxadm
         return tbviewProdutos.getSelectionModel().getSelectedItem();
     }
 
-    // Método público para poder excluir o produto pela classe fxconfirmar
+    // Método público para poder excluir o produto pela classe fxpopupRemProduto
     public void excluirProduto(int idProduto)
     {
         sqlite.excluirProduto(idProduto);
         tbviewProdutos.setItems(sqlite.MostrarProdutos());
+    }
+
+    // Método público para poder editar o produto pela classe fxpopupEditProduto
+    public void editarProduto(int id, String nome, double preco, int estoque)
+    {
+        sqlite.editarProduto(id, nome, preco, estoque);
     }
 
     // Ação do botão de procurar
