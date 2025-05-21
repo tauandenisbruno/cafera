@@ -18,15 +18,47 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.control.ChoiceBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.util.List;
 
 public class fxpopupAddProduto
 {
     private int prod_id, prod_estoque;
     private String prod_nome, erro = "Dados inválidos!";
     private Double prod_preco;
+
+    // Choicebox Categoria ---------------------------------
+    @FXML
+    private ChoiceBox<String> choiceCategoria;
+
+    private void setChoiceBoxCategoria()
+    {
+        List <String> categorias = sqlite.getCategorias();
+        choiceCategoria.getItems().addAll(categorias);
+        if (!categorias.isEmpty())
+        {
+            choiceCategoria.setValue(categorias.get(0));
+        }
+    }
+    // -----------------------------------------------------
+
+    // Choicebox Fornecedor --------------------------------
+    @FXML
+    private ChoiceBox<String> choiceFonecedor;
+
+    private void setChoiceBoxFornecedor()
+    {
+        List <String> fornecedores = sqlite.getFornecedores();
+        choiceFonecedor.getItems().addAll(fornecedores);
+        if (!fornecedores.isEmpty())
+        {
+            choiceFonecedor.setValue(fornecedores.get(0));
+        }
+    }
+    // -----------------------------------------------------
 
     @FXML
     private Button btnCancelar;
@@ -52,6 +84,12 @@ public class fxpopupAddProduto
     @FXML
     public void initialize()
     {
+        // Adiciona a lista de categorias disponíveis no banco na choicebox
+        setChoiceBoxCategoria();
+
+        // Adiciona a lista de fornecedores disponíveis no banco na choicebox
+        setChoiceBoxFornecedor();
+         
         // Impede o campo "Estoque" de inserir dados não números ou com ponto flutuante
         txtfEstoqueProduto.setTextFormatter(new TextFormatter<>(change ->
         {
@@ -163,7 +201,7 @@ public class fxpopupAddProduto
             if(prod_nome != null && !prod_nome.trim().isEmpty())
             {
                 
-                sqlite.adicionarProduto(prod_id, prod_nome, prod_preco, prod_estoque);
+                sqlite.adicionarProduto(prod_id, prod_nome, prod_preco, prod_estoque, choiceCategoria.getValue(), choiceFonecedor.getValue());
 
                 // Tratamento de exceção personalizada para o SQLite [UNIQUE]
                 if(sqlite.getErro() == 19)

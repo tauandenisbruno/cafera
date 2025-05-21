@@ -1,5 +1,5 @@
 /*  Criado em 14 de abril de 2025
- *  Última edição em 11 de maio de 2025
+ *  Última edição em 20 de maio de 2025
  * 
  *  Código: Tauan
  *  Desing: Tauan
@@ -28,7 +28,7 @@ import javafx.stage.Stage;
 public class fxlogin
 {
     // Variáveis estáticas
-    private static String version = "v0.0.10"; // Versão do programa
+    private static String version = "v0.0.11"; // Versão do programa
     private static int usr = 2; // Tipo de usuário (0 : Funcionário / 1 : Administrdor / >1 : inválido)
     private static String[] login = {"Funcionario", "Administrador"}; // Login dos usuários cadastrados
     private static int[] pwd = {12345, 54321}; // As senhas dos usuários cadastrados
@@ -108,8 +108,21 @@ public class fxlogin
                 usr = 0;
                 
                 System.out.println("Logado como \"" + getUsr() + "\"");
-                txtfSenha.clear();
-                txtfUsuario.clear();
+                
+                // Chama a tela do Funcionario
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/adm.fxml"));
+                Parent root = loader.load();
+                Stage admstage = new Stage();
+                admstage.setMinWidth(800);
+                admstage.setMinHeight(650);
+                admstage.setScene(new Scene(root));
+                admstage.setResizable(true);
+                admstage.setTitle("Funcionario");
+                admstage.show();
+
+                // Fecha janela de login
+                Stage fxlogin = (Stage) btnConfirmar.getScene().getWindow();
+                fxlogin.close();
             }
             else if ((txtfUsuario.getText().equals(login[1])) && (pwdconv == pwd[1]))
             {

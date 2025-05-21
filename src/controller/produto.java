@@ -1,5 +1,5 @@
 /*  Criado em 01 de maio de 2025
- *  Última edição em 02 de maio de 2025
+ *  Última edição em 20 de maio de 2025
  * 
  *  Código: Tauan
  *  Linux Mint 22.1 - Vscodium 1.98.2
@@ -13,15 +13,17 @@ package controller;
 public class produto
 {
     private int id, estoque;
-    private String nome;
+    private String nome, categoria, fornecedor;
     private double preco;
 
-    public produto(int id, String nome, double preco, int estoque)
+    public produto(int id, String nome, double preco, int estoque, String categoria, String fornecedor)
     {
         this.id = id;
         this.nome = nome;
         this.preco = preco;
         this.estoque = estoque;
+        this.categoria = categoria;
+        this.fornecedor = fornecedor;
     }
 
     public int getProdutoID()
@@ -42,5 +44,15 @@ public class produto
     public int getProdutoEstoque()
     {
         return estoque;
+    }
+
+    public String getProdutoCategoria()
+    {
+        return categoria;
+    }
+
+    public String getProdutoFornecedor()
+    {
+        return fornecedor;
     }
 }

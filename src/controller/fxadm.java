@@ -80,6 +80,8 @@ public class fxadm
         tbcProdutosNOME.setCellValueFactory(new PropertyValueFactory<>("produtoNome"));
         tbcProdutosPRECO.setCellValueFactory(new PropertyValueFactory<>("produtoPreco"));
         tbcProdutosESTOQUE.setCellValueFactory(new PropertyValueFactory<>("produtoEstoque"));
+        tbcProdutosCATEGORIA.setCellValueFactory(new PropertyValueFactory<>("produtoCategoria"));
+        tbcProdutosFORNECEDOR.setCellValueFactory(new PropertyValueFactory<>("produtoFornecedor"));
 
         // Pedidos
 
@@ -105,18 +107,22 @@ public class fxadm
         // Inicializa a tabela com os dados de fato
         tbviewProdutos.setItems(sqlite.MostrarProdutos());
 
-        // Ativa o botão EXCLUIR da tabela "Produto"
-        tbviewProdutos.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) ->
+        // Verifica se é funcionário ou administrador
+        if (fxlogin.getID() != 0) 
         {
-            if (newValue != null)
+            // Ativa o botão EXCLUIR da tabela "Produto" para adiministrador
+            tbviewProdutos.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) ->
             {
-                btnProdutoRemove.setDisable(false);
-            }
-            else
-            {
-                btnProdutoRemove.setDisable(true);
-            }
-        });
+                if (newValue != null)
+                {
+                    btnProdutoRemove.setDisable(false);
+                }
+                else
+                {
+                    btnProdutoRemove.setDisable(true);
+                }
+            });
+        }
 
         // Ativa o botão EXCLUIR da tabela "Pedidos"
         tbviewPedidos.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) ->
@@ -193,6 +199,12 @@ public class fxadm
     @FXML
     private TableColumn<produto, Double> tbcProdutosPRECO;
 
+    @FXML
+    private TableColumn<produto, String> tbcProdutosCATEGORIA;
+
+    @FXML
+    private TableColumn<produto, String> tbcProdutosFORNECEDOR;
+
     // Ação dos botões de "Pedidos"
     @FXML
     void actionPedidosAtualizar(ActionEvent event)
@@ -231,8 +243,6 @@ public class fxadm
         // Popup de confirmação
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/popupAddProduto.fxml"));
         Parent root = loader.load();
-        //fxpopupAddProduto AddIem = loader.getController();
-        //AddIem.setFxadm(this);
         Stage AddStage = new Stage();
         AddStage.setScene(new Scene(root));
         AddStage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
@@ -288,9 +298,9 @@ public class fxadm
     }
 
     // Método público para poder editar o produto pela classe fxpopupEditProduto
-    public void editarProduto(int id, String nome, double preco, int estoque)
+    public void editarProduto(int id, String nome, double preco, int estoque, String categoria, String fornecedor)
     {
-        sqlite.editarProduto(id, nome, preco, estoque);
+        sqlite.editarProduto(id, nome, preco, estoque, categoria, fornecedor);
     }
 
     // Ação do botão de procurar

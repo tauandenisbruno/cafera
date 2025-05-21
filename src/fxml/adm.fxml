@@ -26,10 +26,12 @@
                      <center>
                         <TableView fx:id="tbviewProdutos" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                           <columns>
-                            <TableColumn fx:id="tbcProdutosID" editable="false" minWidth="50.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-alignment: CENTER;" text="ID" />
-                            <TableColumn fx:id="tbcProdutosNOME" editable="false" minWidth="50.0" prefWidth="75.0" sortable="false" text="Nome" />
-                              <TableColumn fx:id="tbcProdutosPRECO" editable="false" minWidth="50.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-alignment: CENTER-RIGHT;" text="Preço" />
-                              <TableColumn fx:id="tbcProdutosESTOQUE" editable="false" minWidth="50.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-alignment: CENTER;" text="Estoque" />
+                            <TableColumn fx:id="tbcProdutosID" editable="false" maxWidth="110.0" minWidth="80.0" style="-fx-alignment: CENTER;" text="ID" />
+                            <TableColumn fx:id="tbcProdutosNOME" editable="false" minWidth="100.0" prefWidth="100.0" sortable="false" text="Nome" />
+                              <TableColumn fx:id="tbcProdutosPRECO" editable="false" maxWidth="120.0" minWidth="100.0" prefWidth="100.0" sortable="false" style="-fx-alignment: CENTER-RIGHT;" text="Preço" />
+                              <TableColumn fx:id="tbcProdutosESTOQUE" editable="false" maxWidth="120.0" minWidth="100.0" prefWidth="100.0" sortable="false" style="-fx-alignment: CENTER;" text="Estoque" />
+                              <TableColumn fx:id="tbcProdutosCATEGORIA" editable="false" maxWidth="170.0" minWidth="100.0" prefWidth="100.0" text="Categoria" />
+                              <TableColumn fx:id="tbcProdutosFORNECEDOR" editable="false" minWidth="100.0" prefWidth="100.0" sortable="false" text="Fornecedor" />
                           </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -82,6 +84,58 @@
                   </BorderPane>
                </content>
           </Tab>
+            <Tab text="Fornecedores">
+               <content>
+                  <BorderPane prefHeight="200.0" prefWidth="200.0">
+                     <center>
+                        <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                          <columns>
+                            <TableColumn prefWidth="75.0" text="C1" />
+                            <TableColumn prefWidth="75.0" text="C2" />
+                          </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                     </center>
+                     <bottom>
+                        <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                          <buttons>
+                            <Button mnemonicParsing="false" text="Adicionar" />
+                              <Button disable="true" mnemonicParsing="false" text="Remover" />
+                              <Button disable="true" mnemonicParsing="false" text="Editar" />
+                              <Button mnemonicParsing="false" text="Atualizar" />
+                          </buttons>
+                        </ButtonBar>
+                     </bottom></BorderPane>
+               </content>
+            </Tab>
+            <Tab text="Clientes">
+               <content>
+                  <BorderPane prefHeight="200.0" prefWidth="200.0">
+                     <center>
+                        <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                          <columns>
+                            <TableColumn prefWidth="75.0" text="C1" />
+                            <TableColumn prefWidth="75.0" text="C2" />
+                          </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                     </center>
+                     <bottom>
+                        <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                          <buttons>
+                            <Button mnemonicParsing="false" text="Adicionar" />
+                              <Button disable="true" mnemonicParsing="false" text="Remover" />
+                              <Button disable="true" mnemonicParsing="false" text="Editar" />
+                              <Button mnemonicParsing="false" text="Atualizar" />
+                          </buttons>
+                        </ButtonBar>
+                     </bottom>
+                  </BorderPane>
+               </content></Tab>
         </tabs>
       </TabPane>
    </center>
@@ -100,7 +154,7 @@
          <right>
             <ButtonBar buttonMinWidth="50.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="250.0" BorderPane.alignment="CENTER">
               <buttons>
-                  <Label fx:id="lbIDUsuario" alignment="BOTTOM_RIGHT" contentDisplay="CENTER" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="usuario" textAlignment="CENTER" textFill="#dd0000" />
+                  <Label fx:id="lbIDUsuario" alignment="BOTTOM_RIGHT" contentDisplay="CENTER" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="nome_usuario" textAlignment="CENTER" textFill="#dd0000" />
                   <Button fx:id="btnLogout" alignment="CENTER" cancelButton="true" focusTraversable="false" maxWidth="80.0" mnemonicParsing="false" onAction="#actionLogout" text="Sair" textAlignment="CENTER" />
               </buttons>
             </ButtonBar>
