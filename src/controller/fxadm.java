@@ -205,6 +205,19 @@ public class fxadm
     @FXML
     private TableColumn<produto, String> tbcProdutosFORNECEDOR;
 
+    // Tabela CLIENTES
+    @FXML
+    private TableView<?> tbvCliente;
+    
+    @FXML
+    private TableColumn<?, ?> tbcClienteCPF;
+
+    @FXML
+    private TableColumn<?, ?> tbcClienteEmail;
+
+    @FXML
+    private TableColumn<?, ?> tbcClienteNome;
+
     // Ação dos botões de "Pedidos"
     @FXML
     void actionPedidosAtualizar(ActionEvent event)

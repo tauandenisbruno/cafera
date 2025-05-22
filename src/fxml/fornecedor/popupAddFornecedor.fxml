@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="380.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.fxpopupEditProduto">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="380.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.fxpopupAddProduto">
    <children>
       <Button fx:id="btnConfirmar" layoutX="456.0" layoutY="324.0" mnemonicParsing="false" onAction="#actionConfirmar" text="Confirmar" />
       <TextField fx:id="txtfIdProduto" layoutX="163.0" layoutY="67.0" prefHeight="25.0" prefWidth="375.0" promptText="ID ou codigo" />
@@ -18,7 +18,7 @@
       <Label alignment="BOTTOM_LEFT" layoutX="61.0" layoutY="196.0" prefHeight="16.0" prefWidth="69.0" text="Preço" />
       <TextField fx:id="txtfPrecoProduto" layoutX="164.0" layoutY="191.0" prefHeight="25.0" prefWidth="375.0" promptText="R$ ..." />
       <Label alignment="BOTTOM_LEFT" layoutX="61.0" layoutY="155.0" prefHeight="16.0" prefWidth="69.0" text="Estoque" />
-      <Label fx:id="labelTitulo" alignment="BOTTOM_LEFT" layoutX="62.0" layoutY="21.0" prefHeight="22.0" prefWidth="277.0" text="Editar um item">
+      <Label fx:id="labelTitulo" alignment="BOTTOM_LEFT" layoutX="62.0" layoutY="21.0" prefHeight="22.0" prefWidth="277.0" text="Cadastrar novo item">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>

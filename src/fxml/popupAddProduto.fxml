@@ -18,7 +18,7 @@
       <Label alignment="BOTTOM_LEFT" layoutX="61.0" layoutY="196.0" prefHeight="16.0" prefWidth="69.0" text="Preço" />
       <TextField fx:id="txtfPrecoProduto" layoutX="164.0" layoutY="191.0" prefHeight="25.0" prefWidth="375.0" promptText="R$ ..." />
       <Label alignment="BOTTOM_LEFT" layoutX="61.0" layoutY="155.0" prefHeight="16.0" prefWidth="69.0" text="Estoque" />
-      <Label fx:id="labelTitulo" alignment="BOTTOM_LEFT" layoutX="62.0" layoutY="21.0" prefHeight="22.0" prefWidth="277.0" text="Cadastrar novo item">
+      <Label fx:id="labelTitulo" alignment="BOTTOM_LEFT" layoutX="62.0" layoutY="21.0" prefHeight="22.0" prefWidth="277.0" text="Cadastrar novo produto">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
