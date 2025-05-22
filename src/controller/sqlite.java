@@ -6,7 +6,7 @@
  *  Linux Mint 22.1 - Vscodium 1.98.2
  * 
  *  Responsável pela conexão com o MySQL e os métodos reponsáveis pela captura e inserção de
- * dados no banco.
+ *  dados no banco.
  */
 
 package controller;
@@ -126,20 +126,32 @@ public class sqlite
     // Exclui um item da tabela PRODUTO
     public static void excluirProduto(int id)
     {
-        String sql_query = "DELETE FROM PRODUTO WHERE id = ?";
+        try
+        (
+            Connection conn = DriverManager.getConnection(sql_local)
+        )
+        {
+            try
+            (
+                Statement stmt = conn.createStatement()
+            )
+            {
+                stmt.execute("PRAGMA foreign_keys = ON");
+            }
 
-       try
-       (
-        Connection conn = DriverManager.getConnection(sql_local);
-        PreparedStatement excluir = conn.prepareStatement(sql_query);
-       )
-           {
+            String sql_query = "DELETE FROM PRODUTO WHERE ID_PRODUTO = ?";
+
+            try
+            (
+                PreparedStatement excluir = conn.prepareStatement(sql_query)
+            )
+            {
                 excluir.setInt(1, id);
                 excluir.executeUpdate();
                 System.out.println("SQLite > Sucesso (Remover produto ID: " + id + ")");
-           }
-
-        catch(SQLException e)
+            }
+        }
+        catch (SQLException e)
         {
             sql_erro = e.getErrorCode();
             System.out.println("SQLite > Erro: " + e.getMessage());
