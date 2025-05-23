@@ -1,5 +1,5 @@
 /*  Criado em 08 de maio de 2025
-*  Última edição em 11 de maio de 2025
+*  Última edição em 22 de maio de 2025
 * 
 *  Código: Tauan
 *  Linux Mint 22.1 - Vscodium 1.98.2

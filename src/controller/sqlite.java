@@ -39,39 +39,8 @@ public class sqlite
     {
         sql_erro = codigo;
     }
-    
-    // Para mostrar todos os usuários no console para fins de testes
-    public static void MostrarUsuarios()
-    {
-        String sql_query = "SELECT * FROM FUNCIONARIO";
 
-        try
-        (
-            Connection conn = DriverManager.getConnection(sql_local);
-            Statement select = conn.createStatement();
-            ResultSet resultado = select.executeQuery(sql_query);
-        )
-            {
-                    while (resultado.next())
-                    {
-                        String nome = resultado.getString("NOME");
-                        int senha = resultado.getInt("SENHA");
-
-                        System.out.println("NOME: " + nome + " SENHA: " + senha);
-                    }
-                    conn.close();
-                    select.close();
-                    System.out.println("Sucesso");
-            }
-
-            catch(SQLException e)
-            {
-                sql_erro = e.getErrorCode();
-                System.out.println("SQLite > Erro: " + e.getMessage());
-            }
-    }
-
-    // Mostra todos os dados na tabela
+    // Mostra todos os dados da tabela PRODUTO
     public static ObservableList<produto> MostrarProdutos()
     {      
         ObservableList<produto> produtos = FXCollections.observableArrayList();
@@ -111,7 +80,7 @@ public class sqlite
                 }
                 conn.close();
                 select.close();
-                System.out.println("SQLite > Sucesso: Listar");
+                System.out.println("SQLite > Sucesso: Listar \"Produtos\"");
            }
 
         catch(SQLException e)
@@ -219,7 +188,7 @@ public class sqlite
         }
     }
 
-    // Obtém a lista de categorias disponível no banco
+    // Obtém a lista de CATEGORIAS disponível no banco
     public static List<String> getCategorias()
     {
         List<String> categorias = new ArrayList<>();
@@ -246,7 +215,7 @@ public class sqlite
         return categorias;
     }
 
-    // Obtém a lista de categorias disponível no banco
+    // Obtém a lista de FORNECEDORES disponível no banco
     public static List<String> getFornecedores()
     {
         List<String> fornecedor = new ArrayList<>();
@@ -312,4 +281,102 @@ public class sqlite
             sql_erro = e.getErrorCode();
         }
     }
+
+    // Mostra todos os dados da tabela CLIENTE
+    public static ObservableList<cliente> MostrarClientes()
+    {      
+        ObservableList<cliente> clientes = FXCollections.observableArrayList();
+        String sql_query = "SELECT * FROM CLIENTE";
+
+       try
+       (
+        Connection conn = DriverManager.getConnection(sql_local);
+        Statement select = conn.createStatement();
+        ResultSet resultado = select.executeQuery(sql_query);
+       )
+           {
+                while (resultado.next())
+                {
+                    cliente cli = new cliente
+                    (
+                        resultado.getString("NOME"),
+                        resultado.getString("CPF"),
+                        resultado.getString("EMAIL")
+                    );
+                    clientes.add(cli);
+                }
+                conn.close();
+                select.close();
+                System.out.println("SQLite > Sucesso: Listar \"Clientes\"");
+           }
+
+        catch(SQLException e)
+        {
+            sql_erro = e.getErrorCode();
+            System.out.println("SQLite > Erro: " + e.getMessage());
+        }
+
+        return clientes;
+    }
+
+    // Mostra todos os dados da tabela PEDIDOS
+    public static ObservableList<pedido> MostrarPedidos()
+    {      
+        ObservableList<pedido> pedidos = FXCollections.observableArrayList();
+        String sql_query =  """
+                            SELECT 
+                                P.ID_PEDIDO, 
+                                C.NOME AS NOME_CLIENTE, 
+                                P.DATA_PEDIDO, 
+                                PR.NOME AS NOME_PRODUTO, 
+                                PG.TIPO AS TIPO_PAGAMENTO,
+                                PR.PRECO AS PRECO_UNITARIO,
+                                IP.QUANTIDADE,
+                                PR.PRECO * IP.QUANTIDADE AS VLR_TOTAL
+                                
+                            FROM PEDIDO P 
+                            INNER JOIN CLIENTE C ON P.CPF_CLIENTE = C.CPF 
+                            INNER JOIN PAGAMENTO PG ON P.ID_PAGAMENTO = PG.ID_PAGAMENTO 
+                            INNER JOIN ITEM_PEDIDO IP ON P.ID_PEDIDO = IP.ID_PEDIDO 
+                            INNER JOIN PRODUTO PR ON IP.ID_PRODUTO = PR.ID_PRODUTO 
+                            INNER JOIN CATEGORIA CAT ON PR.ID_CATEGORIA = CAT.ID_CATEGORIA 
+                            INNER JOIN FORNECEDOR F ON PR.ID_FORNECEDOR = F.ID_FORNECEDOR;
+                            """;
+
+       try
+       (
+        Connection conn = DriverManager.getConnection(sql_local);
+        Statement select = conn.createStatement();
+        ResultSet resultado = select.executeQuery(sql_query);
+       )
+           {
+                while (resultado.next())
+                {
+                    pedido ped = new pedido
+                    (
+                        resultado.getInt("ID_PEDIDO"),
+                        resultado.getString("NOME_CLIENTE"),
+                        resultado.getString("DATA_PEDIDO"),
+                        resultado.getString("NOME_PRODUTO"),
+                        resultado.getString("TIPO_PAGAMENTO"),
+                        resultado.getDouble("PRECO_UNITARIO"),
+                        resultado.getInt("QUANTIDADE"),
+                        resultado.getDouble("VLR_TOTAL")
+                    );
+                    pedidos.add(ped);
+                }
+                conn.close();
+                select.close();
+                System.out.println("SQLite > Sucesso: Listar \"Pedidos\"");
+           }
+
+        catch(SQLException e)
+        {
+            sql_erro = e.getErrorCode();
+            System.out.println("SQLite > Erro: " + e.getMessage());
+        }
+
+        return pedidos;
+    }
+
 }

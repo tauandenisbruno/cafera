@@ -36,6 +36,18 @@ public class fxadm
 
     // Botões
     @FXML
+    private Button BtnClienteEdit;
+
+    @FXML
+    private Button btnClienteAdd;
+
+    @FXML
+    private Button btnClienteAtualizar;
+
+    @FXML
+    private Button btnClienteRemove;
+
+    @FXML
     private Button btnProcurar;
 
     @FXML
@@ -74,7 +86,7 @@ public class fxadm
     {
         lbIDUsuario.setText(fxlogin.getUsr());
 
-        // Prepara a tabela para definir qual campo será colocado em cada coluna da tabela
+        // Prepara as tabelas
         // Ele pega automaticamente os dados dos métodos Get da classe "produto"
         tbcProdutosID.setCellValueFactory(new PropertyValueFactory<>("produtoID"));
         tbcProdutosNOME.setCellValueFactory(new PropertyValueFactory<>("produtoNome"));
@@ -83,9 +95,27 @@ public class fxadm
         tbcProdutosCATEGORIA.setCellValueFactory(new PropertyValueFactory<>("produtoCategoria"));
         tbcProdutosFORNECEDOR.setCellValueFactory(new PropertyValueFactory<>("produtoFornecedor"));
 
-        // Pedidos
+        // Ele pega automaticamente os dados dos métodos Get da classe "cliente"
+        tbcClienteNome.setCellValueFactory(new PropertyValueFactory<>("ClienteNome"));
+        tbcClienteCPF.setCellValueFactory(new PropertyValueFactory<>("ClienteCPF"));
+        tbcClienteEmail.setCellValueFactory(new PropertyValueFactory<>("ClienteEmail"));
 
-        // Formata a tabela "Preço" para que exiba "R$" e também limita a casa decimal em 2
+        // Ele pega automaticamente os dados dos métodos Get da classe "pedidos"
+        tbcPedidosID.setCellValueFactory(new PropertyValueFactory<>("PedidoId"));
+        tbcPedidosCLIENTE.setCellValueFactory(new PropertyValueFactory<>("PedidoNomeCliente"));
+        tbcPedidosDATA.setCellValueFactory(new PropertyValueFactory<>("PedidoData"));
+        tbcPedidosPRODUTO.setCellValueFactory(new PropertyValueFactory<>("PedidoNomeProduto"));
+        tbcPedidosPAGAMENTO.setCellValueFactory(new PropertyValueFactory<>("PedidoPagamento"));
+        tbcPedidosPRECO.setCellValueFactory(new PropertyValueFactory<>("PedidoPrecoUnitario"));
+        tbcPedidosQUANTIDADE.setCellValueFactory(new PropertyValueFactory<>("PedidoUnidades"));
+        tbcPedidosTOTAL.setCellValueFactory(new PropertyValueFactory<>("PedidoPrecoTotal"));
+
+        // Inicializa a tabela com os dados de fato
+        tbviewProdutos.setItems(sqlite.MostrarProdutos());
+        tbviewCliente.setItems(sqlite.MostrarClientes());
+        tbviewPedidos.setItems(sqlite.MostrarPedidos());
+
+        // [PRODUTO - PRECO] Formata a tabela "Preço" para que exiba "R$" e também limita a casa decimal em 2
         tbcProdutosPRECO.setCellFactory(_ -> new TableCell<produto, Double>()
             {
                 @Override
@@ -104,10 +134,45 @@ public class fxadm
             }
         );
 
-        // Inicializa a tabela com os dados de fato
-        tbviewProdutos.setItems(sqlite.MostrarProdutos());
+        // [PEDIDOS - PRECO] Formata a tabela "Preço" para que exiba "R$" e também limita a casa decimal em 2
+        tbcPedidosPRECO.setCellFactory(_ -> new TableCell<pedido, Double>()
+            {
+                @Override
+                protected void updateItem(Double preco, boolean empty)
+                {
+                    super.updateItem(preco, empty);
+                    if (empty || preco == null)
+                    {
+                        setText(null);
+                    }
+                    else
+                    {
+                        setText(String.format("R$ %.2f", preco));
+                    }
+                }
+            }
+        );
 
-        // Verifica se é funcionário ou administrador
+        // [PEDIDOS - VLR_TOTAL] Formata a tabela "Preço" para que exiba "R$" e também limita a casa decimal em 2
+        tbcPedidosTOTAL.setCellFactory(_ -> new TableCell<pedido, Double>()
+            {
+                @Override
+                protected void updateItem(Double preco, boolean empty)
+                {
+                    super.updateItem(preco, empty);
+                    if (empty || preco == null)
+                    {
+                        setText(null);
+                    }
+                    else
+                    {
+                        setText(String.format("R$ %.2f", preco));
+                    }
+                }
+            }
+        );
+
+        // [RESTRIÇÕES] Verifica se é funcionário ou administrador
         if (fxlogin.getID() != 0) 
         {
             // Ativa o botão EXCLUIR da tabela "Produto" para adiministrador
@@ -122,6 +187,9 @@ public class fxadm
                     btnProdutoRemove.setDisable(true);
                 }
             });
+
+            // Ativa o botão ADICIONAR da tabela "Produtos" para adiministrador
+            btnProdutoAdd.setDisable(false);
         }
 
         // Ativa o botão EXCLUIR da tabela "Pedidos"
@@ -166,22 +234,31 @@ public class fxadm
 
     // Tabela PEDIDOS
     @FXML
-    private TableView<?> tbviewPedidos;
-    
-    @FXML
-    private TableColumn<?, ?> tbcPedidosCLIENTE;
+    private TableView<pedido> tbviewPedidos;
 
     @FXML
-    private TableColumn<?, ?> tbcPedidosID;
+    private TableColumn<pedido, Integer> tbcPedidosID;
 
     @FXML
-    private TableColumn<?, ?> tbcPedidosPRODUTO;
+    private TableColumn<pedido, String> tbcPedidosCLIENTE;
 
     @FXML
-    private TableColumn<?, ?> tbcPedidosQUANTIDADE;
+    private TableColumn<pedido, String> tbcPedidosDATA;
 
     @FXML
-    private TableColumn<?, ?> tbcPedidosTOTAL;
+    private TableColumn<pedido, String> tbcPedidosPRODUTO;
+
+    @FXML
+    private TableColumn<pedido, String> tbcPedidosPAGAMENTO;
+
+    @FXML
+    private TableColumn<pedido, Double> tbcPedidosPRECO;
+
+    @FXML
+    private TableColumn<pedido, Integer> tbcPedidosQUANTIDADE;
+
+    @FXML
+    private TableColumn<pedido, Double> tbcPedidosTOTAL;
 
     // Tabela PRODUTOS
     @FXML
@@ -207,16 +284,16 @@ public class fxadm
 
     // Tabela CLIENTES
     @FXML
-    private TableView<?> tbvCliente;
-    
-    @FXML
-    private TableColumn<?, ?> tbcClienteCPF;
+    private TableView<cliente> tbviewCliente;
 
     @FXML
-    private TableColumn<?, ?> tbcClienteEmail;
+    private TableColumn<cliente, String> tbcClienteCPF;
 
     @FXML
-    private TableColumn<?, ?> tbcClienteNome;
+    private TableColumn<cliente, String> tbcClienteEmail;
+
+    @FXML
+    private TableColumn<cliente, String> tbcClienteNome;
 
     // Ação dos botões de "Pedidos"
     @FXML
