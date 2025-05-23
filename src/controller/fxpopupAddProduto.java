@@ -29,6 +29,12 @@ public class fxpopupAddProduto
     private int prod_id, prod_estoque;
     private String prod_nome, erro = "Dados inválidos!";
     private Double prod_preco;
+    private fxadm fxadm;
+
+    public void setFxamd(fxadm fxadm)
+    {
+        this.fxadm = fxadm;
+    } 
 
     // Choicebox Categoria ---------------------------------
     @FXML
@@ -211,6 +217,7 @@ public class fxpopupAddProduto
                 }
                 else if(sqlite.getErro() == 0)
                 {
+                    fxadm.atualizarTabelas(1);
                     Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
                     stage.close();
                 }

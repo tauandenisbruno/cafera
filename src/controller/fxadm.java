@@ -1,5 +1,5 @@
 /*  Criado em 18 de abril de 2025
- *  Última edição em 11 de maio de 2025
+ *  Última edição em 23 de maio de 2025
  * 
  *  Código: Tauan
  *  Desing: Tauan, Arthur
@@ -110,10 +110,16 @@ public class fxadm
         tbcPedidosQUANTIDADE.setCellValueFactory(new PropertyValueFactory<>("PedidoUnidades"));
         tbcPedidosTOTAL.setCellValueFactory(new PropertyValueFactory<>("PedidoPrecoTotal"));
 
+        // Ele pega automaticamente os dados dos métodos Get da classe "fornecedor"
+        tbcFornecedorID.setCellValueFactory(new PropertyValueFactory<>("FornecedorID"));
+        tbcFornecedorNOME.setCellValueFactory(new PropertyValueFactory<>("FornecedorNome"));
+        tbcFornecedorCONTATO.setCellValueFactory(new PropertyValueFactory<>("FornecedorContato"));
+
         // Inicializa a tabela com os dados de fato
         tbviewProdutos.setItems(sqlite.MostrarProdutos());
         tbviewCliente.setItems(sqlite.MostrarClientes());
         tbviewPedidos.setItems(sqlite.MostrarPedidos());
+        tbviewFornecedor.setItems(sqlite.MostrarFornecedores());
 
         // [PRODUTO - PRECO] Formata a tabela "Preço" para que exiba "R$" e também limita a casa decimal em 2
         tbcProdutosPRECO.setCellFactory(_ -> new TableCell<produto, Double>()
@@ -202,6 +208,19 @@ public class fxadm
             else
             {
                 btnPedidosRemove.setDisable(true);
+            }
+        });
+
+        // Ativa o botão EXCLUIR da tabela "Cliente"
+        tbviewCliente.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) ->
+        {
+            if (newValue != null)
+            {
+                btnClienteRemove.setDisable(false);
+            }
+            else
+            {
+                btnClienteRemove.setDisable(true);
             }
         });
 
@@ -295,6 +314,19 @@ public class fxadm
     @FXML
     private TableColumn<cliente, String> tbcClienteNome;
 
+    // Tabela FORNECEDORES
+    @FXML
+    private TableView<fornecedor> tbviewFornecedor;
+
+    @FXML
+    private TableColumn<fornecedor, String> tbcFornecedorCONTATO;
+
+    @FXML
+    private TableColumn<fornecedor, Integer> tbcFornecedorID;
+
+    @FXML
+    private TableColumn<fornecedor, String> tbcFornecedorNOME;
+
     // Ação dos botões de "Pedidos"
     @FXML
     void actionPedidosAtualizar(ActionEvent event)
@@ -333,6 +365,8 @@ public class fxadm
         // Popup de confirmação
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/popupAddProduto.fxml"));
         Parent root = loader.load();
+        fxpopupAddProduto add = loader.getController();
+        add.setFxamd(this);
         Stage AddStage = new Stage();
         AddStage.setScene(new Scene(root));
         AddStage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
@@ -357,7 +391,6 @@ public class fxadm
         AddStage.show();
     }
 
-    // Excluir produto
     @FXML
     void actionProdutoRemove(ActionEvent event) throws IOException
     {
@@ -374,10 +407,76 @@ public class fxadm
         confStage.show();
     }
 
-    // Método público para poder ser acessado pela classe fxconfirmar
+    // Ação dos botões "Cliente"
+    @FXML
+    void actionClienteAtualizar(ActionEvent event)
+    {
+        tbviewCliente.setItems(sqlite.MostrarClientes());
+    }
+
+    @FXML
+    void actionClienteAdd(ActionEvent event) throws IOException
+    {
+        // Popup de confirmação
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/cliente/popupAddCliente.fxml"));
+        Parent root = loader.load();
+        fxpopupAddCliente add = loader.getController();
+        add.setFxadm(this);
+        Stage AddStage = new Stage();
+        AddStage.setScene(new Scene(root));
+        AddStage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
+        AddStage.setResizable(false);
+        AddStage.setTitle("Cadastrar novo cliente");
+        AddStage.show();
+    }
+
+    @FXML
+    void actionClienteRemove(ActionEvent event) throws IOException
+    {
+        // Popup de confirmação
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/cliente/popupRemCliente.fxml"));
+        Parent root = loader.load();
+        fxpopupRemCliente conf = loader.getController();
+        conf.setFxadm(this);
+        Stage confStage = new Stage();
+        confStage.setScene(new Scene(root));
+        confStage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
+        confStage.setResizable(false);
+        confStage.setTitle("Aviso");
+        confStage.show();
+    }
+
+    // Atualiza o conteúdo da tabela selecionada
+    public void atualizarTabelas(int tabela)
+    {
+        if(tabela == 1)
+        {
+            tbviewProdutos.setItems(sqlite.MostrarProdutos());
+        }
+        else if (tabela == 2)
+        {
+            tbviewPedidos.setItems(sqlite.MostrarPedidos());
+        }
+        else if(tabela == 3)
+        {
+            tbviewFornecedor.setItems(sqlite.MostrarFornecedores());
+        }
+        else if (tabela == 4)
+        {
+            tbviewCliente.setItems(sqlite.MostrarClientes());
+        }
+    }
+
+    // Método público para poder ser acessado pela classe fxpopupRemProduto
     public produto getProdutoSelecionado()
     {
         return tbviewProdutos.getSelectionModel().getSelectedItem();
+    }
+
+    // Método público para poder ser acessado pela classe fxpopupRemCliente
+    public cliente getClienteSelecionado()
+    {
+        return tbviewCliente.getSelectionModel().getSelectedItem();
     }
 
     // Método público para poder excluir o produto pela classe fxpopupRemProduto
@@ -385,6 +484,13 @@ public class fxadm
     {
         sqlite.excluirProduto(idProduto);
         tbviewProdutos.setItems(sqlite.MostrarProdutos());
+    }
+
+    // Método público para poder excluir o cliente pela classe fxpopupRemCliente
+    public void excluirCliente(String CPF)
+    {
+        sqlite.excluirCliente(CPF);
+        tbviewCliente.setItems(sqlite.MostrarClientes());
     }
 
     // Método público para poder editar o produto pela classe fxpopupEditProduto

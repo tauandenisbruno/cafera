@@ -9,14 +9,28 @@
 
 package controller;
 
+import java.io.IOException;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class fxpopupAddCliente
 {
+    private fxadm fxadm;
+
+    public void setFxadm(fxadm fxadm)
+    {
+        this.fxadm = fxadm;
+    }
 
     @FXML
     private Button btnCancelar;
@@ -28,7 +42,7 @@ public class fxpopupAddCliente
     private Label labelTitulo;
 
     @FXML
-    private TextField txtEmail;
+    private TextField txtfEmail;
 
     @FXML
     private TextField txtfCPFCliente;
@@ -37,15 +51,101 @@ public class fxpopupAddCliente
     private TextField txtfNomeCliente;
 
     @FXML
-    void actionCancelar(ActionEvent event)
+    public void initialize()
     {
+        // Configuração do campo Nome
+        txtfNomeCliente.setTextFormatter(new TextFormatter<>(change ->
+        {
+            String text = change.getControlNewText();
+            if (text.length() <= 80)
+            {
+                return change;
+            }
 
+            return null;
+        }));
+
+        // Configuração do campo CPF
+        txtfCPFCliente.setTextFormatter(new TextFormatter<>(change ->
+        {
+            String text = change.getControlNewText();
+            if (text.matches("\\d{0,11}"))
+            {
+                return change;
+            }
+        
+            return null;
+        }));
+
+        // Configuração do campo Email
+        txtfEmail.setTextFormatter(new TextFormatter<>(change ->
+        {
+            if (change.getText().isEmpty() && change.getRangeStart() < change.getControlText().length())
+            {
+                return change; // Permitir exclusão de caracteres
+            }
+            String text = change.getControlNewText();
+            if (text.length() > 50)
+            {
+                return null; // Limite de 50 caracteres
+            }
+            if (text.contains("@") && text.indexOf("@") != text.lastIndexOf("@"))
+            {
+                return null; // Mais de um "@"
+            }
+            if (!text.matches("^[a-zA-Z0-9._@-]+$"))
+            {
+                return null; // Caracteres inválidos
+            }
+            return change;
+        }));
     }
 
     @FXML
-    void actionConfirmar(ActionEvent event)
+    void actionCancelar(ActionEvent event)
     {
-
+        Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+        stage.close();
     }
 
+    @FXML
+    void actionConfirmar(ActionEvent event) throws IOException
+    {
+        
+        String erro = "Ocorreu um erro!";
+
+        // Verifica se os campos estão vazios e realiza o INSERT
+        if(!txtfCPFCliente.getText().isEmpty() && !txtfEmail.getText().isEmpty() && !txtfNomeCliente.getText().trim().isEmpty())
+        {
+            sqlite.adicionarCliente(txtfNomeCliente.getText(), txtfCPFCliente.getText(), txtfEmail.getText());
+        }
+        else
+        {
+            erro = "Um ou mais campos estão vazios!";
+            sqlite.setErro(1);
+        }
+
+        // Verifica se o INSERT foi realizado com sucesso
+        if(sqlite.getErro() != 0)
+        {
+            // Popup de erro da exceção
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/popup.fxml"));
+            Parent root = loader.load();
+            fxpopup popup = loader.getController();
+            popup.setErro(erro);
+            Stage popstage = new Stage();
+            popstage.setScene(new Scene(root));
+            popstage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
+            popstage.setResizable(false);
+            popstage.setTitle("Aviso");
+            popstage.show();
+            sqlite.setErro(0);
+        }
+        else
+        {
+            fxadm.atualizarTabelas(4);
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            stage.close();
+        }
+    }
 }

@@ -184,7 +184,7 @@ public class sqlite
         catch (SQLException e)
         {
             sql_erro = e.getErrorCode();
-            System.out.println("ERRO: " + e.getMessage() + "\nCAUSA: " + e.getCause() + "\nCOD: " + e.getErrorCode());
+            System.out.println("SQLite > Erro: " + e.getMessage());
         }
     }
 
@@ -209,7 +209,7 @@ public class sqlite
         catch(SQLException e)
         {
             sql_erro = e.getErrorCode();
-            System.out.println("ERRO: " + e.getMessage() + "\nCAUSA: " + e.getCause() + "\nCOD: " + e.getErrorCode());
+            System.out.println("SQLite > Erro: " + e.getMessage());
         }
 
         return categorias;
@@ -236,7 +236,7 @@ public class sqlite
         catch(SQLException e)
         {
             sql_erro = e.getErrorCode();
-            System.out.println("ERRO: " + e.getMessage() + "\nCAUSA: " + e.getCause() + "\nCOD: " + e.getErrorCode());
+            System.out.println("SQLite > Erro: " + e.getMessage());
         }
 
         return fornecedor;
@@ -277,7 +277,7 @@ public class sqlite
         }
         catch (SQLException e)
         {
-            System.out.println("ERRO: " + e.getMessage() + "\nCOD: " + e.getErrorCode() + "\nCAUSE: " + e.getCause());
+            System.out.println("SQLite > Erro: " + e.getMessage());
             sql_erro = e.getErrorCode();
         }
     }
@@ -377,6 +377,101 @@ public class sqlite
         }
 
         return pedidos;
+    }
+
+    // Mostra todos os dados da tabela FORNECEDOR
+    public static ObservableList<fornecedor> MostrarFornecedores()
+    {      
+        ObservableList<fornecedor> fornecedores = FXCollections.observableArrayList();
+        String sql_query =  "SELECT * FROM FORNECEDOR";
+
+       try
+       (
+        Connection conn = DriverManager.getConnection(sql_local);
+        Statement select = conn.createStatement();
+        ResultSet resultado = select.executeQuery(sql_query);
+       )
+           {
+                while (resultado.next())
+                {
+                    fornecedor forn = new fornecedor
+                    (
+                        resultado.getInt("ID_FORNECEDOR"),
+                        resultado.getString("NOME"),
+                        resultado.getString("CONTATO")
+                    );
+                    fornecedores.add(forn);
+                }
+                conn.close();
+                select.close();
+                System.out.println("SQLite > Sucesso: Listar \"Fornecedor\"");
+           }
+
+        catch(SQLException e)
+        {
+            sql_erro = e.getErrorCode();
+            System.out.println("SQLite > Erro: " + e.getMessage());
+        }
+
+        return fornecedores;
+    }
+
+    // Adiciona um item da tabela CLIENTE
+    public static void adicionarCliente(String nome, String cpf, String email)
+    {
+        String sql_query = "INSERT INTO CLIENTE (NOME, CPF, EMAIL) VALUES (?, ?, ?)";
+        try
+        (
+            Connection conn = DriverManager.getConnection(sql_local);
+            PreparedStatement cadastrar = conn.prepareStatement(sql_query);
+        )
+        {
+            cadastrar.setString(1, nome);
+            cadastrar.setString(2, cpf);
+            cadastrar.setString(3, email);
+
+            cadastrar.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            sql_erro = e.getErrorCode();
+            System.out.println("SQLite > Erro: " + e.getMessage());
+        }
+    }
+
+    // Exclui um item da tabela CLIENTE
+    public static void excluirCliente(String cpf)
+    {
+        try
+        (
+            Connection conn = DriverManager.getConnection(sql_local)
+        )
+        {
+            try
+            (
+                Statement pragma = conn.createStatement()
+            )
+            {
+                pragma.execute("PRAGMA foreign_keys = ON");
+            }
+
+            String sql_query = "DELETE FROM CLIENTE WHERE CPF = ?";
+
+            try
+            (
+                PreparedStatement excluir = conn.prepareStatement(sql_query)
+            )
+            {
+                excluir.setString(1, cpf);
+                excluir.executeUpdate();
+                System.out.println("SQLite > Sucesso (Remover cliente CPF: " + cpf + ")");
+            }
+        }
+        catch (SQLException e)
+        {
+            sql_erro = e.getErrorCode();
+            System.out.println("SQLite > Erro: " + e.getMessage());
+        }
     }
 
 }

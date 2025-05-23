@@ -13,7 +13,7 @@
       <TextField fx:id="txtfCPFCliente" layoutX="164.0" layoutY="115.0" prefHeight="25.0" prefWidth="375.0" promptText="CPF do cliente" />
       <Label alignment="BOTTOM_LEFT" layoutX="61.0" layoutY="77.0" prefHeight="16.0" prefWidth="69.0" text="Nome:" />
       <Label alignment="BOTTOM_LEFT" layoutX="61.0" layoutY="161.0" prefHeight="16.0" prefWidth="69.0" text="Email:" />
-      <TextField fx:id="txtEmail" layoutX="164.0" layoutY="156.0" prefHeight="25.0" prefWidth="375.0" promptText="Endereço de Email" />
+      <TextField fx:id="txtfEmail" layoutX="164.0" layoutY="156.0" prefHeight="25.0" prefWidth="375.0" promptText="Endereço de Email" />
       <Label alignment="BOTTOM_LEFT" layoutX="61.0" layoutY="120.0" prefHeight="16.0" prefWidth="69.0" text="CPF:" />
       <Label fx:id="labelTitulo" alignment="BOTTOM_LEFT" layoutX="62.0" layoutY="21.0" prefHeight="22.0" prefWidth="277.0" text="Cadastrar novo cliente">
          <font>

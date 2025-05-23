@@ -91,10 +91,11 @@
                <content>
                   <BorderPane prefHeight="200.0" prefWidth="200.0">
                      <center>
-                        <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                        <TableView fx:id="tbviewFornecedor" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                           <columns>
-                            <TableColumn prefWidth="75.0" text="C1" />
-                            <TableColumn prefWidth="75.0" text="C2" />
+                              <TableColumn fx:id="tbcFornecedorID" editable="false" maxWidth="250.0" minWidth="100.0" prefWidth="150.0" sortable="false" style="-fx-alignment: CENTER;" text="ID" />
+                            <TableColumn fx:id="tbcFornecedorNOME" editable="false" maxWidth="1.7976931348623157E308" minWidth="200.0" prefWidth="300.0" sortable="false" text="Nome" />
+                            <TableColumn fx:id="tbcFornecedorCONTATO" editable="false" minWidth="100.0" prefWidth="200.0" sortable="false" style="-fx-alignment: CENTER;" text="Contato" />
                           </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -131,10 +132,10 @@
                      <bottom>
                         <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                           <buttons>
-                            <Button fx:id="btnClienteAdd" mnemonicParsing="false" text="Adicionar" />
-                              <Button fx:id="btnClienteRemove" disable="true" mnemonicParsing="false" text="Remover" />
+                            <Button fx:id="btnClienteAdd" mnemonicParsing="false" onAction="#actionClienteAdd" text="Adicionar" />
+                              <Button fx:id="btnClienteRemove" disable="true" mnemonicParsing="false" onAction="#actionClienteRemove" text="Remover" />
                               <Button fx:id="BtnClienteEdit" disable="true" mnemonicParsing="false" text="Editar" />
-                              <Button fx:id="btnClienteAtualizar" mnemonicParsing="false" text="Atualizar" />
+                              <Button fx:id="btnClienteAtualizar" mnemonicParsing="false" onAction="#actionClienteAtualizar" text="Atualizar" />
                           </buttons>
                         </ButtonBar>
                      </bottom>
