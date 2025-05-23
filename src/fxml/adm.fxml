@@ -134,7 +134,7 @@
                           <buttons>
                             <Button fx:id="btnClienteAdd" mnemonicParsing="false" onAction="#actionClienteAdd" text="Adicionar" />
                               <Button fx:id="btnClienteRemove" disable="true" mnemonicParsing="false" onAction="#actionClienteRemove" text="Remover" />
-                              <Button fx:id="BtnClienteEdit" disable="true" mnemonicParsing="false" text="Editar" />
+                              <Button fx:id="btnClienteEdit" disable="true" mnemonicParsing="false" onAction="#actionClienteEdit" text="Editar" />
                               <Button fx:id="btnClienteAtualizar" mnemonicParsing="false" onAction="#actionClienteAtualizar" text="Atualizar" />
                           </buttons>
                         </ButtonBar>

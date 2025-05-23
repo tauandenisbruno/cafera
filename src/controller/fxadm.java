@@ -36,7 +36,7 @@ public class fxadm
 
     // Botões
     @FXML
-    private Button BtnClienteEdit;
+    private Button btnClienteEdit;
 
     @FXML
     private Button btnClienteAdd;
@@ -234,6 +234,19 @@ public class fxadm
             else
             {
                 btnProdutoEdit.setDisable(true);
+            }
+        });
+
+        // Ativa o botão EDITAR da tabela "Cliente"
+        tbviewCliente.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) ->
+        {
+            if (newValue != null)
+            {
+                btnClienteEdit.setDisable(false);
+            }
+            else
+            {
+                btnClienteEdit.setDisable(true);
             }
         });
 
@@ -444,6 +457,22 @@ public class fxadm
         confStage.setResizable(false);
         confStage.setTitle("Aviso");
         confStage.show();
+    }
+
+    @FXML
+    void actionClienteEdit(ActionEvent event) throws IOException
+    {
+        // Popup de confirmação
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/cliente/popupEditCliente.fxml"));
+        Parent root = loader.load();
+        fxpopupEditCliente edit = loader.getController();
+        edit.setFxadm(this); // mandar a instância atual para o popup de adicionar o produto
+        Stage AddStage = new Stage();
+        AddStage.setScene(new Scene(root));
+        AddStage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
+        AddStage.setResizable(false);
+        AddStage.setTitle("Editar dados do Cliente");
+        AddStage.show();
     }
 
     // Atualiza o conteúdo da tabela selecionada

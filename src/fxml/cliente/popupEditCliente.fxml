@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="270.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.fxpopupEditCliente">
+   <children>
+      <Button fx:id="btnConfirmar" layoutX="456.0" layoutY="212.0" mnemonicParsing="false" onAction="#actionConfirmar" text="Confirmar" />
+      <TextField fx:id="txtfNomeCliente" layoutX="163.0" layoutY="72.0" prefHeight="25.0" prefWidth="375.0" promptText="Nome do cliente" />
+      <TextField fx:id="txtfCPFCliente" layoutX="164.0" layoutY="115.0" prefHeight="25.0" prefWidth="375.0" promptText="CPF do cliente" />
+      <Label alignment="BOTTOM_LEFT" layoutX="61.0" layoutY="77.0" prefHeight="16.0" prefWidth="69.0" text="Nome:" />
+      <Label alignment="BOTTOM_LEFT" layoutX="61.0" layoutY="161.0" prefHeight="16.0" prefWidth="69.0" text="Email:" />
+      <TextField fx:id="txtfEmail" layoutX="164.0" layoutY="156.0" prefHeight="25.0" prefWidth="375.0" promptText="Endereço de Email" />
+      <Label alignment="BOTTOM_LEFT" layoutX="61.0" layoutY="120.0" prefHeight="16.0" prefWidth="69.0" text="CPF:" />
+      <Label fx:id="labelTitulo" alignment="BOTTOM_LEFT" layoutX="62.0" layoutY="21.0" prefHeight="22.0" prefWidth="277.0" text="Cadastrar novo cliente">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Button fx:id="btnCancelar" layoutX="352.0" layoutY="212.0" mnemonicParsing="false" onAction="#actionCancelar" prefHeight="24.0" prefWidth="83.0" text="Cancelar" />
+   </children>
+</AnchorPane>

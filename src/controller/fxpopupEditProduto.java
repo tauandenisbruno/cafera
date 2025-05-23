@@ -39,7 +39,7 @@ public class fxpopupEditProduto
 
      // editProd ainda não tinha sido inicialiado ainda e por isso este método precisa ser criado para
      // que as coisas ocorram na ordem certa: fxadm, fxml (módulos), inicialização das variáveis e então seus dados
-     public void initProduto()
+     private void initProduto()
      {
         produto produtoSelecionado = editProd.getProdutoSelecionado();
         prod_id = produtoSelecionado.getProdutoID();

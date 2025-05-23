@@ -431,6 +431,7 @@ public class sqlite
             cadastrar.setString(3, email);
 
             cadastrar.executeUpdate();
+            System.out.println("SQLite > Sucesso: Adicionar \"Cliente\"");
         }
         catch (SQLException e)
         {
@@ -474,4 +475,28 @@ public class sqlite
         }
     }
 
+    // Edita um item da tabela CLIENTE
+    public static void editarCliente(String nome, String CPF, String email)
+    {
+        String sql_query = "UPDATE CLIENTE SET NOME = ?, CPF = ?, EMAIL = ? WHERE CPF = ?";
+        try
+        (
+            Connection conn = DriverManager.getConnection(sql_local);
+            PreparedStatement update = conn.prepareStatement(sql_query);
+        )
+        {
+            update.setString(1, nome);
+            update.setString(2, CPF);
+            update.setString(3, email);
+            update.setString(4, CPF);
+
+            update.executeUpdate();
+            System.out.println("SQLite > Sucesso: Editar \"Cliente\"");
+        }
+        catch (SQLException e)
+        {
+            System.out.println("SQLite > Erro: " + e.getMessage());
+            sql_erro = e.getErrorCode();
+        }
+    }
 }
