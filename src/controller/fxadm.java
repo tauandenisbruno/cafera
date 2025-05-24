@@ -386,9 +386,19 @@ public class fxadm
     }
 
     @FXML
-    void actionPedidosAdd(ActionEvent event)
+    void actionPedidosAdd(ActionEvent event) throws IOException
     {
-        System.out.println("btn: Adicionar pedido");
+        // Popup de confirmação
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/pedido/popupAddPedido.fxml"));
+        Parent root = loader.load();
+        //fxpopupAddPedido add = loader.getController();
+        //add.setFxamd(this);
+        Stage AddStage = new Stage();
+        AddStage.setScene(new Scene(root));
+        AddStage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
+        AddStage.setResizable(false);
+        AddStage.setTitle("Adicionar novo pedido");
+        AddStage.show();
     }
 
     @FXML

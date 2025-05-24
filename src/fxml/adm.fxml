@@ -165,7 +165,7 @@
             </ButtonBar>
          </right>
          <center>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <BorderPane prefHeight="200.0" prefWidth="200.0" visible="false" BorderPane.alignment="CENTER">
                <right>
                   <Button fx:id="btnProcurar" mnemonicParsing="false" onAction="#actionProcurar" text="Procurar" BorderPane.alignment="CENTER" />
                </right>

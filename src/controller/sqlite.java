@@ -215,6 +215,33 @@ public class sqlite
         return categorias;
     }
 
+    // Obtém a lista de PAGAMENTOS disponível no banco
+    public static List<String> getFormaPagamento()
+    {
+        List<String> pagamentos = new ArrayList<>();
+        String sql_query = "SELECT TIPO FROM PAGAMENTO";
+
+        try
+        (
+            Connection conn = DriverManager.getConnection(sql_local);
+            PreparedStatement getPagamentos = conn.prepareStatement(sql_query);
+            ResultSet resultado = getPagamentos.executeQuery()
+        )
+            {
+                while (resultado.next())
+                {
+                    pagamentos.add(resultado.getString("TIPO"));
+                }
+            }
+        catch(SQLException e)
+        {
+            sql_erro = e.getErrorCode();
+            System.out.println("SQLite > Erro: " + e.getMessage());
+        }
+
+        return pagamentos;
+    }
+
     // Obtém a lista de FORNECEDORES disponível no banco
     public static List<String> getFornecedores()
     {
