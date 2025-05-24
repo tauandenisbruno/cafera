@@ -105,9 +105,9 @@
                      <bottom>
                         <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                           <buttons>
-                            <Button mnemonicParsing="false" text="Adicionar" />
-                              <Button disable="true" mnemonicParsing="false" text="Remover" />
-                              <Button disable="true" mnemonicParsing="false" text="Editar" />
+                            <Button fx:id="btnFornecedorAdd" disable="true" mnemonicParsing="false" onAction="#actionFornecedorAdd" text="Adicionar" />
+                              <Button fx:id="btnFornecedorRemove" disable="true" mnemonicParsing="false" onAction="#actionFornecedorRemove" text="Remover" />
+                              <Button fx:id="btnFornecedorEdit" disable="true" mnemonicParsing="false" onAction="#actionFornecedorEdit" text="Editar" />
                               <Button mnemonicParsing="false" text="Atualizar" />
                           </buttons>
                         </ButtonBar>

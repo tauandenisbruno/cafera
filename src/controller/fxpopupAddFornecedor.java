@@ -17,31 +17,18 @@
  import javafx.scene.Parent;
  import javafx.scene.Scene;
  import javafx.scene.control.Button;
- import javafx.scene.control.Label;
  import javafx.scene.control.TextField;
  import javafx.scene.control.TextFormatter;
  import javafx.stage.Modality;
  import javafx.stage.Stage;
- 
-public class fxpopupEditCliente
+
+public class fxpopupAddFornecedor
 {
     private fxadm fxadm;
 
     public void setFxadm(fxadm fxadm)
     {
         this.fxadm = fxadm;
-        initCliente();
-    }
-
-    private void initCliente()
-    {
-        cliente clienteSelecionado = fxadm.getClienteSelecionado();
-
-        txtfCPFCliente.setText(clienteSelecionado.getClienteCPF());
-        txtfEmail.setText(clienteSelecionado.getClienteEmail());
-        txtfNomeCliente.setText(clienteSelecionado.getClienteNome());
-
-        txtfCPFCliente.setDisable(true);
     }
 
     @FXML
@@ -51,22 +38,16 @@ public class fxpopupEditCliente
     private Button btnConfirmar;
 
     @FXML
-    private Label labelTitulo;
+    private TextField txtfEmailFornecedor;
 
     @FXML
-    private TextField txtfEmail;
-
-    @FXML
-    private TextField txtfCPFCliente;
-
-    @FXML
-    private TextField txtfNomeCliente;
+    private TextField txtfNomeFornecedor;
 
     @FXML
     public void initialize()
     {
         // Configuração do campo Nome
-        txtfNomeCliente.setTextFormatter(new TextFormatter<>(change ->
+        txtfNomeFornecedor.setTextFormatter(new TextFormatter<>(change ->
         {
             String text = change.getControlNewText();
             if (text.length() <= 80)
@@ -77,20 +58,8 @@ public class fxpopupEditCliente
             return null;
         }));
 
-        // Configuração do campo CPF
-        txtfCPFCliente.setTextFormatter(new TextFormatter<>(change ->
-        {
-            String text = change.getControlNewText();
-            if (text.matches("\\d{0,11}"))
-            {
-                return change;
-            }
-        
-            return null;
-        }));
-
         // Configuração do campo Email
-        txtfEmail.setTextFormatter(new TextFormatter<>(change ->
+        txtfEmailFornecedor.setTextFormatter(new TextFormatter<>(change ->
         {
             if (change.getText().isEmpty() && change.getRangeStart() < change.getControlText().length())
             {
@@ -124,12 +93,12 @@ public class fxpopupEditCliente
     void actionConfirmar(ActionEvent event) throws IOException
     {
         
-        String erro = "Dados inválidos!";
+        String erro = "Ocorreu um erro!";
 
         // Verifica se os campos estão vazios e realiza o INSERT
-        if(!txtfCPFCliente.getText().isEmpty() && !txtfEmail.getText().isEmpty() && !txtfNomeCliente.getText().trim().isEmpty())
+        if(!txtfEmailFornecedor.getText().isEmpty() && !txtfNomeFornecedor.getText().trim().isEmpty())
         {
-            sqlite.editarCliente(txtfNomeCliente.getText(), txtfCPFCliente.getText(), txtfEmail.getText());
+            sqlite.adicionarFornecedor(txtfNomeFornecedor.getText(), txtfEmailFornecedor.getText());
         }
         else
         {
@@ -155,9 +124,9 @@ public class fxpopupEditCliente
         }
         else
         {
-            fxadm.atualizarTabelas(4);
+            fxadm.atualizarTabelas(3);
             Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
             stage.close();
         }
-    } 
+    }
 }

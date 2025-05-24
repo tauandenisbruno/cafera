@@ -75,6 +75,15 @@ public class fxadm
     private Button btnProdutoRemove;
 
     @FXML
+    private Button btnFornecedorAdd;
+
+    @FXML
+    private Button btnFornecedorRemove;
+
+    @FXML
+    private Button btnFornecedorEdit;
+
+    @FXML
     private Button btnLogout;
 
     @FXML
@@ -178,10 +187,10 @@ public class fxadm
             }
         );
 
-        // [RESTRIÇÕES] Verifica se é funcionário ou administrador
+        // [RESTRIÇÕES] Verifica se é funcionário ou administrador ---------------------------------------
         if (fxlogin.getID() != 0) 
         {
-            // Ativa o botão EXCLUIR da tabela "Produto" para adiministrador
+            // Ativa o botão REMOVER da tabela "Produto" para adiministrador
             tbviewProdutos.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) ->
             {
                 if (newValue != null)
@@ -194,11 +203,53 @@ public class fxadm
                 }
             });
 
+            // Ativa o botão REMOVER da tabela "Fornecedores" para administrador
+            tbviewFornecedor.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) ->
+            {
+                if (newValue != null)
+                {
+                    btnFornecedorRemove.setDisable(false);
+                }
+                else
+                {
+                    btnFornecedorRemove.setDisable(true);
+                }
+            });
+
+            // Ativa o botão EDITAR da tabela "Produto"
+            tbviewProdutos.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) ->
+            {
+                if (newValue != null)
+                {
+                    btnProdutoEdit.setDisable(false);
+                }
+                else
+                {
+                    btnProdutoEdit.setDisable(true);
+                }
+            });
+
+            // Ativa o botão EDITAR da tabela "Fornecedor"
+            tbviewFornecedor.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) ->
+            {
+                if (newValue != null)
+                {
+                    btnFornecedorEdit.setDisable(false);
+                }
+                else
+                {
+                    btnFornecedorEdit.setDisable(true);
+                }
+            });
+
             // Ativa o botão ADICIONAR da tabela "Produtos" para adiministrador
             btnProdutoAdd.setDisable(false);
-        }
 
-        // Ativa o botão EXCLUIR da tabela "Pedidos"
+            // Ativa o botão ADICIONAR da tabela "Fornecedor" para administrador
+            btnFornecedorAdd.setDisable(false);     
+        } // -------------------------------------------------------------------------------------------------
+
+        // Ativa o botão REMOVER da tabela "Pedidos"
         tbviewPedidos.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) ->
         {
             if (newValue != null)
@@ -211,7 +262,7 @@ public class fxadm
             }
         });
 
-        // Ativa o botão EXCLUIR da tabela "Cliente"
+        // Ativa o botão REMOVER da tabela "Cliente"
         tbviewCliente.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) ->
         {
             if (newValue != null)
@@ -221,19 +272,6 @@ public class fxadm
             else
             {
                 btnClienteRemove.setDisable(true);
-            }
-        });
-
-        // Ativa o botão EDITAR da tabela "Produto"
-        tbviewProdutos.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) ->
-        {
-            if (newValue != null)
-            {
-                btnProdutoEdit.setDisable(false);
-            }
-            else
-            {
-                btnProdutoEdit.setDisable(true);
             }
         });
 
@@ -365,7 +403,7 @@ public class fxadm
         System.out.println("btn: Editar pedido");
     }
 
-    // Ação dos botões de "Produtos"
+    // [PRODUTO] AÇÃO DOS BOTÕES
     @FXML
     void actionProdutosAtualizar(ActionEvent event)
     {
@@ -420,7 +458,7 @@ public class fxadm
         confStage.show();
     }
 
-    // Ação dos botões "Cliente"
+    // [CLIENTE] AÇÃO DOS BOTÕES
     @FXML
     void actionClienteAtualizar(ActionEvent event)
     {
@@ -475,6 +513,55 @@ public class fxadm
         AddStage.show();
     }
 
+    // [FORNECEDOR] AÇÃO DOS BOTÕES
+    @FXML
+    void actionFornecedorAdd(ActionEvent event) throws IOException
+    {
+        // Popup de confirmação
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/fornecedor/popupAddFornecedor.fxml"));
+        Parent root = loader.load();
+        fxpopupAddFornecedor add = loader.getController();
+        add.setFxadm(this);
+        Stage AddStage = new Stage();
+        AddStage.setScene(new Scene(root));
+        AddStage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
+        AddStage.setResizable(false);
+        AddStage.setTitle("Cadastrar novo fornecedor");
+        AddStage.show();
+    }
+
+    @FXML
+    void actionFornecedorRemove(ActionEvent event) throws IOException
+    {
+        // Popup de confirmação
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/fornecedor/popupRemFornecedor.fxml"));
+        Parent root = loader.load();
+        fxpopupRemFornecedor conf = loader.getController();
+        conf.setFxadm(this);
+        Stage confStage = new Stage();
+        confStage.setScene(new Scene(root));
+        confStage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
+        confStage.setResizable(false);
+        confStage.setTitle("Aviso");
+        confStage.show();
+    }
+
+    @FXML
+    void actionFornecedorEdit(ActionEvent event) throws IOException
+    {
+        // Popup de confirmação
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/fornecedor/popupEditFornecedor.fxml"));
+        Parent root = loader.load();
+        fxpopupEditFornecedor edit = loader.getController();
+        edit.setFxadm(this); // mandar a instância atual para o popup de adicionar o produto
+        Stage AddStage = new Stage();
+        AddStage.setScene(new Scene(root));
+        AddStage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
+        AddStage.setResizable(false);
+        AddStage.setTitle("Editar dados do fornecedor");
+        AddStage.show();
+    }
+
     // Atualiza o conteúdo da tabela selecionada
     public void atualizarTabelas(int tabela)
     {
@@ -508,11 +595,24 @@ public class fxadm
         return tbviewCliente.getSelectionModel().getSelectedItem();
     }
 
+    // Método público para poder ser acessado pela classe fxpopupRemFornecedor
+    public fornecedor getFornecedorSelecionado()
+    {
+        return tbviewFornecedor.getSelectionModel().getSelectedItem();
+    }
+
     // Método público para poder excluir o produto pela classe fxpopupRemProduto
     public void excluirProduto(int idProduto)
     {
         sqlite.excluirProduto(idProduto);
         tbviewProdutos.setItems(sqlite.MostrarProdutos());
+    }
+
+    // Método público para poder excluir o produto pela classe fxpopupRemFornecedor
+    public void excluirFornecedor(int idFornecedor)
+    {
+        sqlite.excluirFornecedor(idFornecedor);
+        tbviewFornecedor.setItems(sqlite.MostrarFornecedores());
     }
 
     // Método público para poder excluir o cliente pela classe fxpopupRemCliente

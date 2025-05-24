@@ -499,4 +499,87 @@ public class sqlite
             sql_erro = e.getErrorCode();
         }
     }
+
+      // Adiciona um item da tabela FORNECEDOR
+    public static void adicionarFornecedor(String nome, String email)
+    {
+        String sql_query = "INSERT INTO FORNECEDOR (NOME, CONTATO) VALUES (?, ?)";
+        try
+        (
+            Connection conn = DriverManager.getConnection(sql_local);
+            PreparedStatement cadastrar = conn.prepareStatement(sql_query);
+        )
+        {
+            cadastrar.setString(1, nome);
+            cadastrar.setString(2, email);
+
+            cadastrar.executeUpdate();
+            System.out.println("SQLite > Sucesso: Adicionar \"Fornecedor\"");
+        }
+        catch (SQLException e)
+        {
+            sql_erro = e.getErrorCode();
+            System.out.println("SQLite > Erro: " + e.getMessage());
+        }
+    }
+
+    // Edita um item da tabela FORNECEDOR
+    public static void editarFornecedor(int id, String nome, String email)
+    {
+        String sql_query = "UPDATE FORNECEDOR SET ID_FORNECEDOR = ?, NOME = ?, CONTATO = ? WHERE ID_FORNECEDOR = ?";
+        try
+        (
+            Connection conn = DriverManager.getConnection(sql_local);
+            PreparedStatement update = conn.prepareStatement(sql_query);
+        )
+        {
+            update.setInt(1, id);
+            update.setString(2, nome);
+            update.setString(3, email);
+            update.setInt(4, id);
+
+            update.executeUpdate();
+            System.out.println("SQLite > Sucesso: Editar \"Fornecedor\"");
+        }
+        catch (SQLException e)
+        {
+            System.out.println("SQLite > Erro: " + e.getMessage());
+            sql_erro = e.getErrorCode();
+        }
+    }
+
+    // Exclui um item da tabela FORNECEDOR
+    public static void excluirFornecedor(int id)
+    {
+        try
+        (
+            Connection conn = DriverManager.getConnection(sql_local)
+        )
+        {
+            try
+            (
+                Statement pragma = conn.createStatement()
+            )
+            {
+                pragma.execute("PRAGMA foreign_keys = ON");
+            }
+
+            String sql_query = "DELETE FROM FORNECEDOR WHERE ID_FORNECEDOR = ?";
+
+            try
+            (
+                PreparedStatement excluir = conn.prepareStatement(sql_query)
+            )
+            {
+                excluir.setInt(1, id);
+                excluir.executeUpdate();
+                System.out.println("SQLite > Sucesso (Remover fornecedor ID: " + id + ")");
+            }
+        }
+        catch (SQLException e)
+        {
+            sql_erro = e.getErrorCode();
+            System.out.println("SQLite > Erro: " + e.getMessage());
+        }
+    }
 }
