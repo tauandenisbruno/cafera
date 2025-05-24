@@ -50,7 +50,7 @@ public class fxpopupRemFornecedor
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/popup.fxml"));
             Parent root = loader.load();
             fxpopup popup = loader.getController();
-            popup.setErro("Cliente vinculado a um pedido!");
+            popup.setErro("Fornecedor vinculado a um pedido!");
             Stage popstage = new Stage();
             popstage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
             popstage.setScene(new Scene(root));
