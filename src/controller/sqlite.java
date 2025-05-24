@@ -609,4 +609,203 @@ public class sqlite
             System.out.println("SQLite > Erro: " + e.getMessage());
         }
     }
+
+    // ==================================================================================
+    // Obtém a lista de PAGAMENTOS disponível no banco
+    public static List<String> getPagamentos()
+    {
+        List<String> pagamentos = new ArrayList<>();
+        String sql_query = "SELECT TIPO FROM PAGAMENTO";
+
+        try
+        (
+            Connection conn = DriverManager.getConnection(sql_local);
+            PreparedStatement getPagamentos = conn.prepareStatement(sql_query);
+            ResultSet resultado = getPagamentos.executeQuery()
+        )
+            {
+                while (resultado.next())
+                {
+                    pagamentos.add(resultado.getString("TIPO"));
+                }
+            }
+        catch(SQLException e)
+        {
+            sql_erro = e.getErrorCode();
+            System.out.println("ERRO: " + e.getMessage() + "\nCAUSA: " + e.getCause() + "\nCOD: " + e.getErrorCode());
+        }
+
+        return pagamentos;
+    }
+
+    // Adicionar pedido
+    public static void adicionarPedido(int id, String cliente, String produto, String pagamento, Double preco, int quantidade, Double total)
+    {
+        try
+        (
+            Connection conn = DriverManager.getConnection(sql_local)
+        )
+        {
+            // Obter os IDs do Pagamento, Cliente e do Produto
+            int idTipo = obterId(conn, "SELECT TIPO FROM PAGAMENTO", pagamento);
+            int idProduto = obterId(conn, "SELECT NOME FROM PRODUTO", produto);
+            int idCliente = obterId(conn, "SELECT NOME FROM CLIENTE", cliente);
+
+            // Cadastrar o produto
+            String sql_query = "INSERT INTO PEDIDO (ID_PEDIDO, CLIENTE, PRECO, ESTOQUE, ID_CATEGORIA, ID_FORNECEDOR) VALUES (?, ?, ?, ?, ?, ?)";
+            try
+            (
+                PreparedStatement cadastrar = conn.prepareStatement(sql_query)
+            )
+            {
+                cadastrar.setInt(1, id);
+                cadastrar.setInt(2, idCliente);
+                cadastrar.setInt(4, idProduto);
+                cadastrar.setInt(5, idTipo);
+                cadastrar.setDouble(6, preco);
+                cadastrar.setInt(7, quantidade);
+                cadastrar.setDouble(8, total);
+                cadastrar.executeUpdate();
+            }
+        }
+        catch (SQLException e)
+        {
+            sql_erro = e.getErrorCode();
+            System.out.println("ERRO: " + e.getMessage() + "\nCAUSA: " + e.getCause() + "\nCOD: " + e.getErrorCode());
+        }
+    }
+
+    // Edita um item da tabela pedido
+    public static void editarPedido(int id, String cliente, String produto, String pagamento, String data, Double preco, int quantidade, Double total)
+    {
+        try
+        (
+            Connection conn = DriverManager.getConnection(sql_local)
+        )
+        {
+            // Obter os IDs da categoria e do fornecedor
+            int idTipo = obterId(conn, "SELECT ID_PAGAMENTO FROM PAGAMENTO WHERE TIPO = ?", pagamento);
+            int idProduto = obterId(conn, "SELECT ID_PRODUTO FROM PRODUTO WHERE NOME = ?", produto);
+            int idCliente = obterId(conn, "SELECT NOME FROM CLIENTE WHERE NOME = ?", cliente);
+            String sql_query = """
+                    UPDATE PEDIDO 
+                    SET CPF_CLIENTE = ?, DATA_PEDIDO = ?, ID_PAGAMENTO = ?, ID_PRODUTO = ?, NOME = ? 
+                    WHERE ID_PEDIDO = ?
+                    """;
+            try
+            (
+                PreparedStatement update = conn.prepareStatement(sql_query)
+            )
+            {
+
+                update.setInt(1, id);
+                update.setInt(2, idCliente);
+                update.setInt(4, idProduto);
+                update.setInt(5, idTipo);
+                update.setDouble(6, preco);
+                update.setInt(7, quantidade);
+                update.setDouble(8, total);
+                update.setInt(6, id);
+
+                update.executeUpdate();
+                System.out.println("SQLite > Sucesso: Editar");
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("ERRO: " + e.getMessage() + "\nCOD: " + e.getErrorCode() + "\nCAUSE: " + e.getCause());
+            sql_erro = e.getErrorCode();
+        }
+    }
+
+    // Exclui um item da tabela PEDIDO
+    public static void excluirPedido(int id)
+    {
+        try
+        (
+            Connection conn = DriverManager.getConnection(sql_local)
+        )
+        {
+            try
+            (
+                Statement stmt = conn.createStatement()
+            )
+            {
+                stmt.execute("PRAGMA foreign_keys = ON");
+            }
+
+            String sql_query = "DELETE FROM PEDIDO WHERE ID_PEDIDO = ?";
+
+            try
+            (
+                PreparedStatement excluir = conn.prepareStatement(sql_query)
+            )
+            {
+                excluir.setInt(1, id);
+                excluir.executeUpdate();
+                System.out.println("SQLite > Sucesso (Remover produto ID: " + id + ")");
+            }
+        }
+        catch (SQLException e)
+        {
+            sql_erro = e.getErrorCode();
+            System.out.println("SQLite > Erro: " + e.getMessage());
+        }
+    }
+
+    // Obtém a lista de CLIENTES disponível no banco
+    public static List<String> getClientes()
+    {
+        List<String> clientes = new ArrayList<>();
+        String sql_query = "SELECT NOME FROM CLIENTE";
+
+        try
+        (
+            Connection conn = DriverManager.getConnection(sql_local);
+            PreparedStatement getClientes = conn.prepareStatement(sql_query);
+            ResultSet resultado = getClientes.executeQuery()
+        )
+            {
+                while (resultado.next())
+                {
+                    clientes.add(resultado.getString("NOME"));
+                }
+            }
+        catch(SQLException e)
+        {
+            sql_erro = e.getErrorCode();
+            System.out.println("ERRO: " + e.getMessage() + "\nCAUSA: " + e.getCause() + "\nCOD: " + e.getErrorCode());
+        }
+
+        return clientes;
+    }
+
+    // Obtém a lista de PRODUTOS disponível no banco
+    public static List<String> getProdutos()
+    {
+        List<String> produtos = new ArrayList<>();
+        String sql_query = "SELECT NOME FROM PRODUTO";
+
+        try
+        (
+            Connection conn = DriverManager.getConnection(sql_local);
+            PreparedStatement getProdutos = conn.prepareStatement(sql_query);
+            ResultSet resultado = getProdutos.executeQuery()
+        )
+            {
+                while (resultado.next())
+                {
+                    produtos.add(resultado.getString("NOME"));
+                }
+            }
+        catch(SQLException e)
+        {
+            sql_erro = e.getErrorCode();
+            System.out.println("ERRO: " + e.getMessage() + "\nCAUSA: " + e.getCause() + "\nCOD: " + e.getErrorCode());
+        }
+
+        return produtos;
+    }
+
+    // ==================================================================================
 }

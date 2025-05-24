@@ -385,33 +385,69 @@ public class fxadm
         System.out.println("btn: Atualizar tabela pedido");
     }
 
+    // ========================================================================================================
     @FXML
     void actionPedidosAdd(ActionEvent event) throws IOException
     {
         // Popup de confirmação
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/pedido/popupAddPedido.fxml"));
         Parent root = loader.load();
-        //fxpopupAddPedido add = loader.getController();
-        //add.setFxamd(this);
         Stage AddStage = new Stage();
         AddStage.setScene(new Scene(root));
         AddStage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
         AddStage.setResizable(false);
-        AddStage.setTitle("Adicionar novo pedido");
+        AddStage.setTitle("Adicionar novo item");
         AddStage.show();
     }
 
     @FXML
-    void actionPedidosRemove(ActionEvent event)
+    void actionPedidosRemove(ActionEvent event) throws IOException
     {
-        System.out.println("btn: Remover pedido");
+        // Popup de confirmação
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/pedido/popupRemPedido.fxml"));
+        Parent root = loader.load();
+        Stage confStage = new Stage();
+        confStage.setScene(new Scene(root));
+        confStage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
+        confStage.setResizable(false);
+        confStage.setTitle("Aviso");
+        confStage.show();
     }
 
     @FXML
-    void actionPedidosEdit(ActionEvent event)
+    void actionPedidosEdit(ActionEvent event) throws IOException
     {
-        System.out.println("btn: Editar pedido");
+        // Popup de confirmação
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/pedido/popupEditPedido.fxml"));
+        Parent root = loader.load();
+        Stage AddStage = new Stage();
+        AddStage.setScene(new Scene(root));
+        AddStage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
+        AddStage.setResizable(false);
+        AddStage.setTitle("Editar um item");
+        AddStage.show();
     }
+
+    // Método público para poder ser acessado pela classe fxconfirmar
+    public pedido getPedidoSelecionado()
+    {
+        return tbviewPedidos.getSelectionModel().getSelectedItem();
+    }
+
+    // Método público para poder editar o produto pela classe fxpopupEditPedido
+    public void editarPedido(int id, String cliente, String data, String produto, String pagamento, Double preco, int quantidade, Double total)
+    {
+        sqlite.editarPedido(id, cliente, data, produto, pagamento, preco, quantidade, total);
+    }
+
+    // Método público para poder excluir o pedido pela classe fxpopupRemPedido
+    public void excluirPedido(int idPedido)
+    {
+        sqlite.excluirPedido(idPedido);
+        tbviewPedidos.setItems(sqlite.MostrarPedidos());
+    }
+
+    // ========================================================================================================
 
     // [PRODUTO] AÇÃO DOS BOTÕES
     @FXML

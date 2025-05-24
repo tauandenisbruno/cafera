@@ -9,8 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class fxpopupAddPedido
-{
+public class fxpopupAddPedido {
 
     @FXML
     private Button btnCancelar;
@@ -19,13 +18,13 @@ public class fxpopupAddPedido
     private Button btnConfirmar;
 
     @FXML
-    private ChoiceBox<String> choiceCliente;
+    private ChoiceBox<?> choiceCliente;
 
     @FXML
-    private ChoiceBox<String> choicePagamento;
+    private ChoiceBox<?> choicePagamento;
 
     @FXML
-    private ChoiceBox<String> choiceProduto;
+    private ChoiceBox<?> choiceProduto;
 
     @FXML
     private DatePicker cxData;
@@ -34,20 +33,10 @@ public class fxpopupAddPedido
     private Label labelTitulo;
 
     @FXML
-    private TextField txtfIdProduto;
-
-    @FXML
-    private TextField txtfPrecoProdutoUni;
-
-    @FXML
     private TextField txtfQuantidadeProdutos;
 
     @FXML
-    private TextField txtfTotalPedido;
-
-    @FXML
-    void actionCancelar(ActionEvent event)
-    {
+    void actionCancelar(ActionEvent event) {
         Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         stage.close();
     }
