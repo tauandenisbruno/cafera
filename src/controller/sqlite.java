@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.PreparedStatement;
@@ -638,42 +639,69 @@ public class sqlite
         return pagamentos;
     }
 
-    // Adicionar pedido
-    public static void adicionarPedido(int id, String cliente, String produto, String pagamento, Double preco, int quantidade, Double total)
-    {
-        try
-        (
-            Connection conn = DriverManager.getConnection(sql_local)
-        )
-        {
-            // Obter os IDs do Pagamento, Cliente e do Produto
-            int idTipo = obterId(conn, "SELECT TIPO FROM PAGAMENTO", pagamento);
-            int idProduto = obterId(conn, "SELECT NOME FROM PRODUTO", produto);
-            int idCliente = obterId(conn, "SELECT NOME FROM CLIENTE", cliente);
-
-            // Cadastrar o produto
-            String sql_query = "INSERT INTO PEDIDO (ID_PEDIDO, CLIENTE, PRECO, ESTOQUE, ID_CATEGORIA, ID_FORNECEDOR) VALUES (?, ?, ?, ?, ?, ?)";
-            try
-            (
-                PreparedStatement cadastrar = conn.prepareStatement(sql_query)
-            )
-            {
-                cadastrar.setInt(1, id);
-                cadastrar.setInt(2, idCliente);
-                cadastrar.setInt(4, idProduto);
-                cadastrar.setInt(5, idTipo);
-                cadastrar.setDouble(6, preco);
-                cadastrar.setInt(7, quantidade);
-                cadastrar.setDouble(8, total);
-                cadastrar.executeUpdate();
+    // Obtém o CPF de um cliente
+    private static String getCpfCliente(Connection conn, String nomeCliente) throws SQLException {
+    String sql = "SELECT CPF FROM CLIENTE WHERE NOME = ?";
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, nomeCliente);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getString("CPF");
+            } else {
+                throw new SQLException("Cliente não encontrado: " + nomeCliente);
             }
         }
-        catch (SQLException e)
-        {
-            sql_erro = e.getErrorCode();
-            System.out.println("ERRO: " + e.getMessage() + "\nCAUSA: " + e.getCause() + "\nCOD: " + e.getErrorCode());
+    }
+}
+
+    // Adiciona um pedido
+    public static void adicionarPedido(String cliente, String produto, String pagamento, LocalDate data, int quantidade) throws SQLException {
+    String sqlPedido = "INSERT INTO PEDIDO (CPF_CLIENTE, DATA_PEDIDO, ID_PAGAMENTO) VALUES (?, ?, ?)";
+    String sqlItem = "INSERT INTO ITEM_PEDIDO (ID_PEDIDO, ID_PRODUTO, QUANTIDADE) VALUES (?, ?, ?)";
+
+    try (Connection conn = DriverManager.getConnection(sql_local)) {
+        conn.setAutoCommit(false);  // Desativa o commit automático
+
+        try (
+            PreparedStatement psPedido = conn.prepareStatement(sqlPedido, Statement.RETURN_GENERATED_KEYS)
+        ) {
+            int idPagamento = obterId(conn, "SELECT ID_PAGAMENTO FROM PAGAMENTO WHERE TIPO = ?", pagamento);
+            String cpfCliente = getCpfCliente(conn, cliente); // Novo método auxiliar para obter CPF do cliente
+            int idProduto = obterId(conn, "SELECT ID_PRODUTO FROM PRODUTO WHERE NOME = ?", produto);
+            //double preco = getPrecoProduto(conn, produto); // Este método precisa ser implementado
+
+            psPedido.setString(1, cpfCliente);
+            psPedido.setString(2, data.toString());
+            psPedido.setInt(3, idPagamento);
+
+            psPedido.executeUpdate();
+
+            ResultSet rs = psPedido.getGeneratedKeys();
+            if (rs.next()) {
+                int idPedidoGerado = rs.getInt(1);
+
+                try (PreparedStatement psItem = conn.prepareStatement(sqlItem)) {
+                    psItem.setInt(1, idPedidoGerado);
+                    psItem.setInt(2, idProduto);
+                    psItem.setInt(3, quantidade);
+                    
+
+                    psItem.executeUpdate();
+                }
+
+                conn.commit();
+                System.out.println("SQLite > Sucesso: Pedido inserido (ID_PEDIDO: " + idPedidoGerado + ")");
+            } else {
+                conn.rollback();
+                System.out.println("SQLite > Erro: Não foi possível obter o ID do pedido.");
+            }
+        } catch (SQLException e) {
+            conn.rollback();
+            throw e;
         }
     }
+}
+
 
     // Edita um item da tabela pedido
     public static void editarPedido(int id, String cliente, String produto, String pagamento, String data, Double preco, int quantidade, Double total)
@@ -718,40 +746,36 @@ public class sqlite
         }
     }
 
-    // Exclui um item da tabela PEDIDO
-    public static void excluirPedido(int id)
-    {
-        try
-        (
-            Connection conn = DriverManager.getConnection(sql_local)
-        )
-        {
-            try
-            (
-                Statement stmt = conn.createStatement()
-            )
-            {
-                stmt.execute("PRAGMA foreign_keys = ON");
-            }
+    // Exclui um item da tabela pedido
+    public static void excluirPedido(int idPedido) {
+    try (Connection conn = DriverManager.getConnection(sql_local)) {
+        conn.createStatement().execute("PRAGMA foreign_keys = ON");
 
-            String sql_query = "DELETE FROM PEDIDO WHERE ID_PEDIDO = ?";
+        // Deleta na item_pedido
+        String sqlDeleteItens = "DELETE FROM ITEM_PEDIDO WHERE ID_PEDIDO = ?";
+        try (PreparedStatement psDeleteItens = conn.prepareStatement(sqlDeleteItens)) {
+            psDeleteItens.setInt(1, idPedido);
+            psDeleteItens.executeUpdate();
+        }
 
-            try
-            (
-                PreparedStatement excluir = conn.prepareStatement(sql_query)
-            )
-            {
-                excluir.setInt(1, id);
-                excluir.executeUpdate();
-                System.out.println("SQLite > Sucesso (Remover produto ID: " + id + ")");
+        // Deleta o pedido
+        String sqlDeletePedido = "DELETE FROM PEDIDO WHERE ID_PEDIDO = ?";
+        try (PreparedStatement psDeletePedido = conn.prepareStatement(sqlDeletePedido)) {
+            psDeletePedido.setInt(1, idPedido);
+            int afetados = psDeletePedido.executeUpdate();
+
+            if (afetados > 0) {
+                System.out.println("SQLite > Sucesso (Remover pedido ID: " + idPedido + ")");
+            } else {
+                System.out.println("SQLite > Nenhum pedido encontrado com ID: " + idPedido);
             }
         }
-        catch (SQLException e)
-        {
-            sql_erro = e.getErrorCode();
-            System.out.println("SQLite > Erro: " + e.getMessage());
-        }
+
+    } catch (SQLException e) {
+        sql_erro = e.getErrorCode();
+        System.out.println("SQLite > Erro: " + e.getMessage());
     }
+}
 
     // Obtém a lista de CLIENTES disponível no banco
     public static List<String> getClientes()

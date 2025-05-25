@@ -382,7 +382,7 @@ public class fxadm
     @FXML
     void actionPedidosAtualizar(ActionEvent event)
     {
-        System.out.println("btn: Atualizar tabela pedido");
+         tbviewPedidos.setItems(sqlite.MostrarPedidos());
     }
 
     // ========================================================================================================
@@ -400,12 +400,14 @@ public class fxadm
         AddStage.show();
     }
 
-    @FXML
+        @FXML
     void actionPedidosRemove(ActionEvent event) throws IOException
     {
         // Popup de confirmação
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/pedido/popupRemPedido.fxml"));
         Parent root = loader.load();
+        fxpopupRemPedido conf = loader.getController();
+        conf.setFxadm(this);
         Stage confStage = new Stage();
         confStage.setScene(new Scene(root));
         confStage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
@@ -420,6 +422,8 @@ public class fxadm
         // Popup de confirmação
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/pedido/popupEditPedido.fxml"));
         Parent root = loader.load();
+        fxpopupEditPedido edit = loader.getController();
+        edit.setFxadm(this); // mandar a instância atual para o popup de adicionar o produto
         Stage AddStage = new Stage();
         AddStage.setScene(new Scene(root));
         AddStage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
