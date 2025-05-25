@@ -28,7 +28,7 @@ import javafx.stage.Stage;
 public class fxlogin
 {
     // Variáveis estáticas
-    private static String version = "v0.0.13"; // Versão do programa
+    private static String version = "v0.1.0"; // Versão do programa
     private static int usr = 2; // Tipo de usuário (0 : Funcionário / 1 : Administrdor / >1 : inválido)
     private static String[] login = {"Funcionario", "Administrador"}; // Login dos usuários cadastrados
     private static int[] pwd = {12345, 54321}; // As senhas dos usuários cadastrados

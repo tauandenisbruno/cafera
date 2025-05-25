@@ -655,20 +655,21 @@ public class sqlite
 }
 
     // Adiciona um pedido
-    public static void adicionarPedido(String cliente, String produto, String pagamento, LocalDate data, int quantidade) throws SQLException {
-    String sqlPedido = "INSERT INTO PEDIDO (CPF_CLIENTE, DATA_PEDIDO, ID_PAGAMENTO) VALUES (?, ?, ?)";
-    String sqlItem = "INSERT INTO ITEM_PEDIDO (ID_PEDIDO, ID_PRODUTO, QUANTIDADE) VALUES (?, ?, ?)";
+    public static void adicionarPedido(String cliente, String produto, String pagamento, LocalDate data, int quantidade)
+    {
+        String sqlPedido = "INSERT INTO PEDIDO (CPF_CLIENTE, DATA_PEDIDO, ID_PAGAMENTO) VALUES (?, ?, ?)";
+        String sqlItem = "INSERT INTO ITEM_PEDIDO (ID_PEDIDO, ID_PRODUTO, QUANTIDADE) VALUES (?, ?, ?)";
 
-    try (Connection conn = DriverManager.getConnection(sql_local)) {
-        conn.setAutoCommit(false);  // Desativa o commit automático
-
-        try (
-            PreparedStatement psPedido = conn.prepareStatement(sqlPedido, Statement.RETURN_GENERATED_KEYS)
-        ) {
+        try
+        (
+            Connection conn = DriverManager.getConnection(sql_local);
+            PreparedStatement psPedido = conn.prepareStatement(sqlPedido, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement psItem = conn.prepareStatement(sqlItem)
+        )
+        {
             int idPagamento = obterId(conn, "SELECT ID_PAGAMENTO FROM PAGAMENTO WHERE TIPO = ?", pagamento);
             String cpfCliente = getCpfCliente(conn, cliente); // Novo método auxiliar para obter CPF do cliente
             int idProduto = obterId(conn, "SELECT ID_PRODUTO FROM PRODUTO WHERE NOME = ?", produto);
-            //double preco = getPrecoProduto(conn, produto); // Este método precisa ser implementado
 
             psPedido.setString(1, cpfCliente);
             psPedido.setString(2, data.toString());
@@ -677,105 +678,112 @@ public class sqlite
             psPedido.executeUpdate();
 
             ResultSet rs = psPedido.getGeneratedKeys();
-            if (rs.next()) {
+            if (rs.next())
+            {
                 int idPedidoGerado = rs.getInt(1);
-
-                try (PreparedStatement psItem = conn.prepareStatement(sqlItem)) {
+                {
                     psItem.setInt(1, idPedidoGerado);
                     psItem.setInt(2, idProduto);
                     psItem.setInt(3, quantidade);
-                    
-
                     psItem.executeUpdate();
                 }
-
-                conn.commit();
-                System.out.println("SQLite > Sucesso: Pedido inserido (ID_PEDIDO: " + idPedidoGerado + ")");
-            } else {
-                conn.rollback();
-                System.out.println("SQLite > Erro: Não foi possível obter o ID do pedido.");
             }
-        } catch (SQLException e) {
-            conn.rollback();
-            throw e;
+        }
+        catch (SQLException e)
+        {
+            sql_erro = e.getErrorCode();
+            System.out.println("ERRO: " + e.getMessage() + "\nCAUSA: " + e.getCause() + "\nCOD: " + e.getErrorCode());
         }
     }
-}
 
 
     // Edita um item da tabela pedido
-    public static void editarPedido(int id, String cliente, String produto, String pagamento, String data, Double preco, int quantidade, Double total)
+    public static void editarPedido(int idPedido, String cliente, String produto, String pagamento, LocalDate data, int quantidade)
+    {
+        String sqlUpdatePedido = "UPDATE PEDIDO SET CPF_CLIENTE = ?, DATA_PEDIDO = ?, ID_PAGAMENTO = ? WHERE ID_PEDIDO = ?";
+        String sqlUpdateItem = "UPDATE ITEM_PEDIDO SET ID_PRODUTO = ?, QUANTIDADE = ? WHERE ID_PEDIDO = ?";
+
+        try
+        (
+            Connection conn = DriverManager.getConnection(sql_local);
+            PreparedStatement psPedido = conn.prepareStatement(sqlUpdatePedido);
+            PreparedStatement psItem = conn.prepareStatement(sqlUpdateItem)
+        )
+        {
+            int idPagamento = obterId(conn, "SELECT ID_PAGAMENTO FROM PAGAMENTO WHERE TIPO = ?", pagamento);
+            int idProduto = obterId(conn, "SELECT ID_PRODUTO FROM PRODUTO WHERE NOME = ?", produto);
+            String cpfCliente = getCpfCliente(conn, cliente); // Usa o CPF como referência, não ID
+
+            // Atualizar PEDIDO
+            psPedido.setString(1, cpfCliente);
+            psPedido.setString(2, data.toString());
+            psPedido.setInt(3, idPagamento);
+            psPedido.setInt(4, idPedido);
+            psPedido.executeUpdate();
+
+            // Atualizar ITEM_PEDIDO
+            psItem.setInt(1, idProduto);
+            psItem.setInt(2, quantidade);
+            psItem.setInt(3, idPedido);
+            psItem.executeUpdate();
+            
+            System.out.println("SQLite > Sucesso: Pedido editado (ID_PEDIDO: " + idPedido + ")");
+        }
+        catch(SQLException e)
+        {
+            sql_erro = e.getErrorCode();
+            System.out.println("SQLite > Erro: " + e.getMessage());
+        }
+    }
+
+    // Exclui um item da tabela pedido
+    public static void excluirPedido(int idPedido)
     {
         try
         (
             Connection conn = DriverManager.getConnection(sql_local)
         )
         {
-            // Obter os IDs da categoria e do fornecedor
-            int idTipo = obterId(conn, "SELECT ID_PAGAMENTO FROM PAGAMENTO WHERE TIPO = ?", pagamento);
-            int idProduto = obterId(conn, "SELECT ID_PRODUTO FROM PRODUTO WHERE NOME = ?", produto);
-            int idCliente = obterId(conn, "SELECT NOME FROM CLIENTE WHERE NOME = ?", cliente);
-            String sql_query = """
-                    UPDATE PEDIDO 
-                    SET CPF_CLIENTE = ?, DATA_PEDIDO = ?, ID_PAGAMENTO = ?, ID_PRODUTO = ?, NOME = ? 
-                    WHERE ID_PEDIDO = ?
-                    """;
+            conn.createStatement().execute("PRAGMA foreign_keys = ON");
+
+            // Deleta na item_pedido
+            String sqlDeleteItens = "DELETE FROM ITEM_PEDIDO WHERE ID_PEDIDO = ?";
+
             try
             (
-                PreparedStatement update = conn.prepareStatement(sql_query)
+                PreparedStatement psDeleteItens = conn.prepareStatement(sqlDeleteItens)
             )
             {
-
-                update.setInt(1, id);
-                update.setInt(2, idCliente);
-                update.setInt(4, idProduto);
-                update.setInt(5, idTipo);
-                update.setDouble(6, preco);
-                update.setInt(7, quantidade);
-                update.setDouble(8, total);
-                update.setInt(6, id);
-
-                update.executeUpdate();
-                System.out.println("SQLite > Sucesso: Editar");
+                psDeleteItens.setInt(1, idPedido);
+                psDeleteItens.executeUpdate();
             }
-        }
-        catch (SQLException e)
+
+            // Deleta o pedido
+            String sqlDeletePedido = "DELETE FROM PEDIDO WHERE ID_PEDIDO = ?";
+            try
+            (
+                PreparedStatement psDeletePedido = conn.prepareStatement(sqlDeletePedido)
+            )
+            {
+                psDeletePedido.setInt(1, idPedido);
+                int afetados = psDeletePedido.executeUpdate();
+
+                if (afetados > 0)
+                {
+                    System.out.println("SQLite > Sucesso (Remover pedido ID: " + idPedido + ")");
+                }
+                else
+                {
+                    System.out.println("SQLite > Nenhum pedido encontrado com ID: " + idPedido);
+                }
+            }
+
+        } catch (SQLException e)
         {
-            System.out.println("ERRO: " + e.getMessage() + "\nCOD: " + e.getErrorCode() + "\nCAUSE: " + e.getCause());
             sql_erro = e.getErrorCode();
+            System.out.println("SQLite > Erro: " + e.getMessage());
         }
     }
-
-    // Exclui um item da tabela pedido
-    public static void excluirPedido(int idPedido) {
-    try (Connection conn = DriverManager.getConnection(sql_local)) {
-        conn.createStatement().execute("PRAGMA foreign_keys = ON");
-
-        // Deleta na item_pedido
-        String sqlDeleteItens = "DELETE FROM ITEM_PEDIDO WHERE ID_PEDIDO = ?";
-        try (PreparedStatement psDeleteItens = conn.prepareStatement(sqlDeleteItens)) {
-            psDeleteItens.setInt(1, idPedido);
-            psDeleteItens.executeUpdate();
-        }
-
-        // Deleta o pedido
-        String sqlDeletePedido = "DELETE FROM PEDIDO WHERE ID_PEDIDO = ?";
-        try (PreparedStatement psDeletePedido = conn.prepareStatement(sqlDeletePedido)) {
-            psDeletePedido.setInt(1, idPedido);
-            int afetados = psDeletePedido.executeUpdate();
-
-            if (afetados > 0) {
-                System.out.println("SQLite > Sucesso (Remover pedido ID: " + idPedido + ")");
-            } else {
-                System.out.println("SQLite > Nenhum pedido encontrado com ID: " + idPedido);
-            }
-        }
-
-    } catch (SQLException e) {
-        sql_erro = e.getErrorCode();
-        System.out.println("SQLite > Erro: " + e.getMessage());
-    }
-}
 
     // Obtém a lista de CLIENTES disponível no banco
     public static List<String> getClientes()

@@ -12,6 +12,7 @@
 package controller;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -393,6 +394,8 @@ public class fxadm
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/pedido/popupAddPedido.fxml"));
         Parent root = loader.load();
         Stage AddStage = new Stage();
+        fxpopupAddPedido add = loader.getController();
+        add.setFxadm(this);
         AddStage.setScene(new Scene(root));
         AddStage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
         AddStage.setResizable(false);
@@ -439,9 +442,9 @@ public class fxadm
     }
 
     // Método público para poder editar o produto pela classe fxpopupEditPedido
-    public void editarPedido(int id, String cliente, String data, String produto, String pagamento, Double preco, int quantidade, Double total)
+    public void editarPedido(int id, String cliente, String produto, String pagamento, LocalDate dataSelecionada, int quantidade)
     {
-        sqlite.editarPedido(id, cliente, data, produto, pagamento, preco, quantidade, total);
+        sqlite.editarPedido(id, cliente, produto, pagamento, dataSelecionada, quantidade);
     }
 
     // Método público para poder excluir o pedido pela classe fxpopupRemPedido
@@ -670,12 +673,6 @@ public class fxadm
     {
         sqlite.excluirCliente(CPF);
         tbviewCliente.setItems(sqlite.MostrarClientes());
-    }
-
-    // Método público para poder editar o produto pela classe fxpopupEditProduto
-    public void editarProduto(int id, String nome, double preco, int estoque, String categoria, String fornecedor)
-    {
-        sqlite.editarProduto(id, nome, preco, estoque, categoria, fornecedor);
     }
 
     // Ação do botão de procurar

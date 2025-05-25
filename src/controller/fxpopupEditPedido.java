@@ -22,8 +22,8 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
 import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -31,8 +31,7 @@ public class fxpopupEditPedido
 {
     private int ped_quantidade;
     private fxadm fxadm;
-    //private String ped_nomecliente, ped_nomeproduto, erro = "Dados inválidos!";
-    //private Double ped_precouni, ped_total;
+    private pedido pedidoSelecionado;
 
     public void setFxadm(fxadm fxadm)
     {
@@ -42,7 +41,7 @@ public class fxpopupEditPedido
 
     private void initPedido()
     {
-        pedido pedidoSelecionado = fxadm.getPedidoSelecionado();
+        pedidoSelecionado = fxadm.getPedidoSelecionado();
         choiceCliente.setValue(pedidoSelecionado.getPedidoNomeCliente());
         choicePagamento.setValue(pedidoSelecionado.getPedidoPagamento());
         choiceProduto.setValue((pedidoSelecionado.getPedidoNomeProduto()));
@@ -96,20 +95,8 @@ public class fxpopupEditPedido
     }
     // -----------------------------------------------------
 
-    // DataPicker ---------------------------------
     @FXML
     private DatePicker cxData;
-
-    @FXML
-    private void setDataPickerData() {
-        LocalDate dataSelecionada = cxData.getValue();
-
-        if (dataSelecionada != null) {
-            System.out.println("Data selecionada: " + dataSelecionada);
-            // Aqui você pode armazenar, formatar ou utilizar essa data como quiser
-        }
-    }
-    // -----------------------------------------------------
 
     @FXML
     private Button btnCancelar;
@@ -117,15 +104,11 @@ public class fxpopupEditPedido
     @FXML
     private Button btnConfirmar;
 
-    
-
     @FXML
     private Label labelTitulo;
 
     @FXML
     private TextField txtfQuantidadeProdutos;
-
-    
 
     @FXML
     public void initialize()
@@ -138,16 +121,12 @@ public class fxpopupEditPedido
 
         // Adiciona a lista de Clientes disponíveis no banco na choicebox
         setChoiceBoxCliente();
-
-        // Adiciona a data
-        setDataPickerData();
          
         // Impede o campo "Quantidade" de inserir dados não números ou com ponto flutuante
         txtfQuantidadeProdutos.setTextFormatter(new TextFormatter<>(change ->
         {
             String newText = change.getControlNewText();
-
-            if (newText.matches("[0-9]*"))
+            if (newText.matches("\\d{0,5}"))
             {
                 return change;
             }
@@ -156,7 +135,21 @@ public class fxpopupEditPedido
                 return null;
             }
         }));
-        
+
+        // Configura o DatePicker para aceitar somente números e a barra
+        TextField textField = cxData.getEditor();
+        textField.setTextFormatter(new TextFormatter<>(change ->
+        {
+            String newText = change.getControlNewText();
+            if (newText.matches("[0-9/]{0,10}"))
+            {
+                return change;
+            }
+            else
+            {
+                return null;
+            }
+        }));
     }
 
     // Fecha a janela
@@ -167,9 +160,9 @@ public class fxpopupEditPedido
         stage.close();
     }
 
-    // Adiciona o pedido na tabela
+    // Atualiza o pedido na tabela
     @FXML
-    void actionConfirmar(ActionEvent event) throws IOException, SQLException
+    void actionConfirmar(ActionEvent event) throws IOException
     {
         try
         {
@@ -178,16 +171,45 @@ public class fxpopupEditPedido
             
             LocalDate dataSelecionada = cxData.getValue();
 
-            if (dataSelecionada == null) {
-                System.out.println("Data não selecionada!");
-                return;
-            }
-            
+            String erro = "Ocorreu um erro!";
+
+            // Verifica se os campos estão vazios e realiza o UPDATE
+            if(ped_quantidade >= 0 && dataSelecionada != null)
             {
-                sqlite.adicionarPedido(choiceCliente.getValue(), choiceProduto.getValue(), choicePagamento.getValue(), dataSelecionada, ped_quantidade);
+                sqlite.editarPedido(pedidoSelecionado.getPedidoId(), choiceCliente.getValue(), choiceProduto.getValue(), choicePagamento.getValue(), dataSelecionada, ped_quantidade);
             }
-            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-            stage.close();
+            else
+            {
+                erro = "Um ou mais campos estão vazios!";
+                sqlite.setErro(1);
+            }
+
+            // Verifica se o UPDATE foi realizado com sucesso
+            if(sqlite.getErro() != 0)
+            {
+                if(sqlite.getErro() == 19)
+                {
+                    erro = "A data é inválida!";
+                }
+                // Popup de erro da exceção
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/popup.fxml"));
+                Parent root = loader.load();
+                fxpopup popup = loader.getController();
+                popup.setErro(erro);
+                Stage popstage = new Stage();
+                popstage.setScene(new Scene(root));
+                popstage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela "pai"
+                popstage.setResizable(false);
+                popstage.setTitle("Aviso");
+                popstage.show();
+                sqlite.setErro(0);
+            }
+            else
+            {
+                fxadm.actionPedidosAtualizar(null);
+                Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+                stage.close();
+            }
         }
         catch(NumberFormatException e)
         {
